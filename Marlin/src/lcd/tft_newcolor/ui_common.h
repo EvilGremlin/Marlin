@@ -33,6 +33,7 @@
 #if ENABLED(TOUCH_SCREEN)
   #include "touch.h"
   extern bool draw_menu_navigation;
+
 #endif
 
 #if HAS_UI_320x240
@@ -45,8 +46,8 @@
   #error "Unsupported display resolution!"
 #endif
 
-void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater);
-void draw_fan_status(uint16_t x, uint16_t y, const bool blink);
+// void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater);
+// void draw_fan_status(uint16_t x, uint16_t y, const bool blink);
 
 void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
 void menu_item(const uint8_t row, bool sel = false);
@@ -54,6 +55,9 @@ void menu_item(const uint8_t row, bool sel = false);
 #if HAS_TOUCH_SLEEP
   bool lcd_sleep_task();
 #endif
+
+#define Z_SELECTION_Z 1
+#define Z_SELECTION_Z_PROBE -1
 
 #define ABSOLUTE_ZERO     -273.15
 

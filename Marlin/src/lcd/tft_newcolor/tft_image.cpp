@@ -42,6 +42,7 @@ const tImage Back_v1_48x4         = { (void *)back_v1_48x4, 48, 48, GREYSCALE4 }
 const tImage Bed_leveling_64x4         = { (void *)bed_leveling_64x4, 64, 64, GREYSCALE4 };
 const tImage Bed_leveling_96x4         = { (void *)bed_leveling_96x4, 96, 96, GREYSCALE4 };
 const tImage Bed_temp_v1_64x4         = { (void *)bed_temp_v1_64x4, 64, 64, GREYSCALE4 };
+const tImage Bed_z_offset_64x64x4         = { (void *)bed_z_offset_64x64x4, 64, 64, GREYSCALE4 };
 const tImage Chamber_light_96x4         = { (void *)chamber_light_96x4, 96, 96, GREYSCALE4 };
 const tImage Chamber_temp_64x4         = { (void *)chamber_temp_64x4, 64, 64, GREYSCALE4 };
 const tImage Check_p_64x4         = { (void *)check_p_64x4, 64, 64, GREYSCALE4 };
@@ -50,21 +51,30 @@ const tImage Cross_p_64x4         = { (void *)cross_p_64x4, 64, 64, GREYSCALE4 }
 const tImage Down_48x4         = { (void *)down_48x4, 48, 48, GREYSCALE4 };
 const tImage Fan_v1_64x4         = { (void *)fan_v1_64x4, 64, 64, GREYSCALE4 };
 const tImage Home_all_64x4         = { (void *)home_all_64x4, 64, 64, GREYSCALE4 };
+const tImage Hotend_64x64x4         = { (void *)hotend_64x64x4, 64, 64, GREYSCALE4 };
 const tImage Hotend_temp_64x4         = { (void *)hotend_temp_64x4, 64, 64, GREYSCALE4 };
 const tImage Left_48x4         = { (void *)left_48x4, 48, 48, GREYSCALE4 };
 const tImage Machine_prusa_48x4         = { (void *)machine_prusa_48x4, 48, 48, GREYSCALE4 };
 const tImage Machine_prusa_64x4         = { (void *)machine_prusa_64x4, 64, 64, GREYSCALE4 };
+const tImage Minus_p_48x48x4         = { (void *)minus_p_48x48x4, 48, 48, GREYSCALE4 };
 const tImage Move_all_96x4         = { (void *)move_all_96x4, 96, 96, GREYSCALE4 };
+const tImage Move_e_down_64x64x4         = { (void *)move_E_down_64x64x4, 64, 64, GREYSCALE4 };
+const tImage Move_e_up_64x64x4         = { (void *)move_E_up_64x64x4, 64, 64, GREYSCALE4 };
+const tImage Move_z_64x64x4         = { (void *)move_Z_64x64x4, 64, 64, GREYSCALE4 };
+const tImage Ok_p_48x48x4         = { (void *)ok_p_48x48x4, 48, 48, GREYSCALE4 };
+const tImage Plus_p_48x48x4         = { (void *)plus_p_48x48x4, 48, 48, GREYSCALE4 };
 const tImage Printing_flow_64x4         = { (void *)printing_flow_64x4, 64, 64, GREYSCALE4 };
 const tImage Printing_speed_64x4         = { (void *)printing_speed_64x4, 64, 64, GREYSCALE4 };
 const tImage Printing_tune_64x4         = { (void *)printing_tune_64x4, 64, 64, GREYSCALE4 };
 const tImage Printing_tune_96x4         = { (void *)printing_tune_96x4, 96, 96, GREYSCALE4 };
+const tImage Prism_128x64x4         = { (void *)prism_128x64x4, 128, 64, GREYSCALE4 };
 const tImage Prism_64x4         = { (void *)prism_64x4, 64, 64, GREYSCALE4 };
 const tImage Redo_v1_48x4         = { (void *)redo_v1_48x4, 48, 48, GREYSCALE4 };
 const tImage Right_48x4         = { (void *)right_48x4, 48, 48, GREYSCALE4 };
 const tImage Sd_v1_64x4         = { (void *)SD_v1_64x4, 64, 64, GREYSCALE4 };
 const tImage Sd_v1_96x4         = { (void *)SD_v1_96x4, 96, 96, GREYSCALE4 };
 const tImage Spool_96x4         = { (void *)spool_96x4, 96, 96, GREYSCALE4 };
+const tImage Stepper_off_64x64x4         = { (void *)stepper_off_64x64x4, 64, 64, GREYSCALE4 };
 const tImage Thermo_96x4         = { (void *)thermo_96x4, 96, 96, GREYSCALE4 };
 const tImage Up_48x4         = { (void *)up_48x4, 48, 48, GREYSCALE4 };
 //endcpp1
@@ -77,6 +87,7 @@ const tImage Images[imgCount] = {
   Bed_leveling_64x4,
   Bed_leveling_96x4,
   Bed_temp_v1_64x4,
+  Bed_z_offset_64x64x4,
   Chamber_light_96x4,
   Chamber_temp_64x4,
   Check_p_64x4,
@@ -85,21 +96,30 @@ const tImage Images[imgCount] = {
   Down_48x4,
   Fan_v1_64x4,
   Home_all_64x4,
+  Hotend_64x64x4,
   Hotend_temp_64x4,
   Left_48x4,
   Machine_prusa_48x4,
   Machine_prusa_64x4,
+  Minus_p_48x48x4,
   Move_all_96x4,
+  Move_e_down_64x64x4,
+  Move_e_up_64x64x4,
+  Move_z_64x64x4,
+  Ok_p_48x48x4,
+  Plus_p_48x48x4,
   Printing_flow_64x4,
   Printing_speed_64x4,
   Printing_tune_64x4,
   Printing_tune_96x4,
+  Prism_128x64x4,
   Prism_64x4,
   Redo_v1_48x4,
   Right_48x4,
   Sd_v1_64x4,
   Sd_v1_96x4,
   Spool_96x4,
+  Stepper_off_64x64x4,
   Thermo_96x4,
   Up_48x4,
 //endcpp2

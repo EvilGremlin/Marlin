@@ -36,6 +36,7 @@ extern const uint8_t back_v1_48x4[];
 extern const uint8_t bed_leveling_64x4[];
 extern const uint8_t bed_leveling_96x4[];
 extern const uint8_t bed_temp_v1_64x4[];
+extern const uint8_t bed_z_offset_64x64x4[];
 extern const uint8_t chamber_light_96x4[];
 extern const uint8_t chamber_temp_64x4[];
 extern const uint8_t check_p_64x4[];
@@ -44,21 +45,30 @@ extern const uint8_t cross_p_64x4[];
 extern const uint8_t down_48x4[];
 extern const uint8_t fan_v1_64x4[];
 extern const uint8_t home_all_64x4[];
+extern const uint8_t hotend_64x64x4[];
 extern const uint8_t hotend_temp_64x4[];
 extern const uint8_t left_48x4[];
 extern const uint8_t machine_prusa_48x4[];
 extern const uint8_t machine_prusa_64x4[];
+extern const uint8_t minus_p_48x48x4[];
 extern const uint8_t move_all_96x4[];
+extern const uint8_t move_E_down_64x64x4[];
+extern const uint8_t move_E_up_64x64x4[];
+extern const uint8_t move_Z_64x64x4[];
+extern const uint8_t ok_p_48x48x4[];
+extern const uint8_t plus_p_48x48x4[];
 extern const uint8_t printing_flow_64x4[];
 extern const uint8_t printing_speed_64x4[];
 extern const uint8_t printing_tune_64x4[];
 extern const uint8_t printing_tune_96x4[];
+extern const uint8_t prism_128x64x4[];
 extern const uint8_t prism_64x4[];
 extern const uint8_t redo_v1_48x4[];
 extern const uint8_t right_48x4[];
 extern const uint8_t SD_v1_64x4[];
 extern const uint8_t SD_v1_96x4[];
 extern const uint8_t spool_96x4[];
+extern const uint8_t stepper_off_64x64x4[];
 extern const uint8_t thermo_96x4[];
 extern const uint8_t up_48x4[];
 //endh1
@@ -71,6 +81,7 @@ enum MarlinImage : uint8_t {
   imgBedleveling64x4,
   imgBedleveling96x4,
   imgBedtempv164x4,
+  imgBedzoffset64x64x4,
   imgChamberlight96x4,
   imgChambertemp64x4,
   imgCheckp64x4,
@@ -79,21 +90,30 @@ enum MarlinImage : uint8_t {
   imgDown48x4,
   imgFanv164x4,
   imgHomeall64x4,
+  imgHotend64x64x4,
   imgHotendtemp64x4,
   imgLeft48x4,
   imgMachineprusa48x4,
   imgMachineprusa64x4,
+  imgMinusp48x48x4,
   imgMoveall96x4,
+  imgMoveedown64x64x4,
+  imgMoveeup64x64x4,
+  imgMovez64x64x4,
+  imgOkp48x48x4,
+  imgPlusp48x48x4,
   imgPrintingflow64x4,
   imgPrintingspeed64x4,
   imgPrintingtune64x4,
   imgPrintingtune96x4,
+  imgPrism128x64x4,
   imgPrism64x4,
   imgRedov148x4,
   imgRight48x4,
   imgSdv164x4,
   imgSdv196x4,
   imgSpool96x4,
+  imgStepperoff64x64x4,
   imgThermo96x4,
   imgUp48x4,
 //endh2
@@ -137,6 +157,7 @@ extern const tImage Back_v1_48x4;
 extern const tImage Bed_leveling_64x4;
 extern const tImage Bed_leveling_96x4;
 extern const tImage Bed_temp_v1_64x4;
+extern const tImage Bed_z_offset_64x64x4;
 extern const tImage Chamber_light_96x4;
 extern const tImage Chamber_temp_64x4;
 extern const tImage Check_p_64x4;
@@ -145,21 +166,30 @@ extern const tImage Cross_p_64x4;
 extern const tImage Down_48x4;
 extern const tImage Fan_v1_64x4;
 extern const tImage Home_all_64x4;
+extern const tImage Hotend_64x64x4;
 extern const tImage Hotend_temp_64x4;
 extern const tImage Left_48x4;
 extern const tImage Machine_prusa_48x4;
 extern const tImage Machine_prusa_64x4;
+extern const tImage Minus_p_48x48x4;
 extern const tImage Move_all_96x4;
+extern const tImage Move_e_down_64x64x4;
+extern const tImage Move_e_up_64x64x4;
+extern const tImage Move_z_64x64x4;
+extern const tImage Ok_p_48x48x4;
+extern const tImage Plus_p_48x48x4;
 extern const tImage Printing_flow_64x4;
 extern const tImage Printing_speed_64x4;
 extern const tImage Printing_tune_64x4;
 extern const tImage Printing_tune_96x4;
+extern const tImage Prism_128x64x4;
 extern const tImage Prism_64x4;
 extern const tImage Redo_v1_48x4;
 extern const tImage Right_48x4;
 extern const tImage Sd_v1_64x4;
 extern const tImage Sd_v1_96x4;
 extern const tImage Spool_96x4;
+extern const tImage Stepper_off_64x64x4;
 extern const tImage Thermo_96x4;
 extern const tImage Up_48x4;
 //endh3
