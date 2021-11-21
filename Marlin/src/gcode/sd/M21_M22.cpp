@@ -38,7 +38,7 @@ void GcodeSuite::M21() { card.mount(); }
  */
 void GcodeSuite::M22() {
   if (!IS_SD_PRINTING()) card.release();
-  IF_ENABLED(TFT_COLOR_UI, ui.refresh(LCDVIEW_CALL_REDRAW_NEXT));
+  TERN_(HAS_GRAPHICAL_TFT, ui.refresh(LCDVIEW_CALL_REDRAW_NEXT));
 }
 
 #endif // SDSUPPORT

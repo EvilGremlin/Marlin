@@ -178,9 +178,9 @@ static void _lcd_level_bed_corners_get_next_position() {
 
     // Display # of good points found vs total needed
     if (PAGE_CONTAINS(y - (MENU_FONT_HEIGHT), y)) {
-      SETCURSOR(TERN(TFT_COLOR_UI, 2, 0), cy);
+      SETCURSOR(TERN(HAS_GRAPHICAL_TFT, 2, 0), cy);
       lcd_put_u8str(GET_TEXT_F(MSG_BED_TRAMMING_GOOD_POINTS));
-      IF_ENABLED(TFT_COLOR_UI, lcd_moveto(12, cy));
+      TERN_(HAS_GRAPHICAL_TFT, lcd_moveto(12, cy));
       lcd_put_u8str(GOOD_POINTS_TO_STR(good_points));
       lcd_put_wchar('/');
       lcd_put_u8str(GOOD_POINTS_TO_STR(nr_edge_points));
@@ -191,9 +191,9 @@ static void _lcd_level_bed_corners_get_next_position() {
 
     // Display the Last Z value
     if (PAGE_CONTAINS(y - (MENU_FONT_HEIGHT), y)) {
-      SETCURSOR(TERN(TFT_COLOR_UI, 2, 0), cy);
+      SETCURSOR(TERN(HAS_GRAPHICAL_TFT, 2, 0), cy);
       lcd_put_u8str(GET_TEXT_F(MSG_BED_TRAMMING_LAST_Z));
-      IF_ENABLED(TFT_COLOR_UI, lcd_moveto(12, 2));
+      TERN_(HAS_GRAPHICAL_TFT, lcd_moveto(12, 2));
       lcd_put_u8str(LAST_Z_TO_STR(last_z));
     }
   }
