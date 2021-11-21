@@ -158,6 +158,9 @@ void Touch::touch(touch_control_t *control) {
 
     case MENU_SCREEN: ui.goto_screen((screenFunc_t)control->data); break;
     case BACK: ui.goto_previous_screen(); break;
+    case MENU_MAIN: ui.goto_screen(menu_main); break;
+    case MENU_MEDIA: ui.goto_screen(menu_media); break;
+
     case MENU_CLICK:
       TERN_(SINGLE_TOUCH_NAVIGATION, ui.encoderPosition = control->data);
       ui.lcd_clicked = true;

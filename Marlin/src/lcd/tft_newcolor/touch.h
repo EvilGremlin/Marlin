@@ -48,6 +48,8 @@ enum TouchControlType : uint16_t {
   CALIBRATE,
   MENU_SCREEN,
   MENU_ITEM,
+  MENU_MAIN,
+  MENU_MEDIA,
   BACK,
   PAGE_UP,
   PAGE_DOWN,
