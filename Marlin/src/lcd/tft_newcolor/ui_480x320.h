@@ -48,14 +48,6 @@
 #endif
 #define MENU_LINE_HEIGHT      (MENU_ITEM_HEIGHT + 2)
 
-
-
-//to replace
-#define E_BTN_COLOR COLOR_YELLOW1
-#define X_BTN_COLOR COLOR_YELLOW1
-#define Y_BTN_COLOR COLOR_YELLOW1
-#define Z_BTN_COLOR COLOR_YELLOW1
-
 #define BTN_WIDTH 64
 #define BTN_HEIGHT 64
 #define X_MARGIN 20

@@ -26,24 +26,24 @@
 
 #include "ui_common.h"
 
-#include "../marlinui.h"
-#include "../menu/menu.h"
-#include "../../libs/numtostr.h"
+// #include "../marlinui.h"
+// #include "../menu/menu.h"
+// #include "../../libs/numtostr.h"
 
-#include "../../sd/cardreader.h"
-#include "../../module/temperature.h"
-#include "../../module/printcounter.h"
-#include "../../module/planner.h"
-#include "../../module/motion.h"
+// #include "../../sd/cardreader.h"
+// #include "../../module/temperature.h"
+// #include "../../module/printcounter.h"
+// #include "../../module/planner.h"
+// #include "../../module/motion.h"
 
-#if DISABLED(LCD_PROGRESS_BAR) && BOTH(FILAMENT_LCD_DISPLAY, SDSUPPORT)
-  #include "../../feature/filwidth.h"
-  #include "../../gcode/parser.h"
-#endif
+// #if DISABLED(LCD_PROGRESS_BAR) && BOTH(FILAMENT_LCD_DISPLAY, SDSUPPORT)
+//   #include "../../feature/filwidth.h"
+//   #include "../../gcode/parser.h"
+// #endif
 
-#if ENABLED(AUTO_BED_LEVELING_UBL)
-  #include "../../feature/bedlevel/bedlevel.h"
-#endif
+// #if ENABLED(AUTO_BED_LEVELING_UBL)
+//   #include "../../feature/bedlevel/bedlevel.h"
+// #endif
 
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
@@ -120,7 +120,7 @@ void MarlinUI::draw_kill_screen() {
 }
 
 void MarlinUI::draw_status_screen() {
-  const bool blink = get_blink();
+  // const bool blink = get_blink();
   uint16_t x = 24;
 
   TERN_(TOUCH_SCREEN, touch.clear());
@@ -419,6 +419,8 @@ struct MotionAxisState {
 
 MotionAxisState motionAxisState;
 
+const bool blink = MarlinUI::get_blink();
+
 static void quick_feedback() {
   #if HAS_CHIRP
     ui.chirp(); // Buzz and wait. Is the delay needed for buttons to settle?
@@ -462,29 +464,30 @@ static void drawCurESelection() {
 }
 
 static void drawMessage(const char *msg) {
-  tft.canvas(X_MARGIN, TFT_HEIGHT - Y_MARGIN - 34, TFT_HEIGHT / 2, 34);
+  tft.canvas(352, 88, 120, 24);
   tft.set_background(COLOR_BACKGROUND);
   tft.add_text(0, 0, COLOR_RED2, msg);
 }
 
+// TODO: rewrite into something proper and universal
 static void drawAxisValue(const AxisEnum axis) {
   const float value = (
     TERN_(HAS_BED_PROBE, axis == Z_AXIS && motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? probe.offset.z :)
     ui.manual_move.axis_value(axis)
   );
   xy_int_t pos;
-  uint16_t color;
+  bool not_homed = axis_should_home(X_AXIS);
   switch (axis) {
-    case X_AXIS: pos = motionAxisState.xValuePos; color = X_BTN_COLOR; break;
-    case Y_AXIS: pos = motionAxisState.yValuePos; color = Y_BTN_COLOR; break;
-    case Z_AXIS: pos = motionAxisState.zValuePos; color = Z_BTN_COLOR; break;
-    case E_AXIS: pos = motionAxisState.eValuePos; color = E_BTN_COLOR; break;
+    case X_AXIS: pos = motionAxisState.xValuePos; break;
+    case Y_AXIS: pos = motionAxisState.yValuePos; break;
+    case Z_AXIS: pos = motionAxisState.zValuePos; break;
+    case E_AXIS: pos = motionAxisState.eValuePos; break;
     default: return;
   }
   tft.canvas(pos.x, pos.y, BTN_WIDTH + X_MARGIN, BTN_HEIGHT);
   tft.set_background(COLOR_BACKGROUND);
-  tft_string.set(ftostr52sp(value));
-  tft.add_text(0, 0, color, tft_string);
+  tft_string.set(blink && not_homed ? "?" : ftostr52sign(LOGICAL_X_POSITION(current_position.x)));
+  tft.add_text(0, 0, not_homed ? COLOR_AXIS_NOT_HOMED : COLOR_AXIS_HOMED, tft_string);
 }
 
 static void moveAxis(const AxisEnum axis, const int8_t direction) {
@@ -663,10 +666,12 @@ void MarlinUI::move_axis_screen() {
   if (busy && ENABLED(BABYSTEP_ZPROBE_OFFSET))
     motionAxisState.z_selection = Z_SELECTION_Z_PROBE;
 
+  // Draw controls layout
   // ROW 1: Z+    Y+    E+   Back
-  // ROW 2:   X- Home X+   
-  // ROW 3: Z-    Y-    E-
-  // ROW 4:  S- Step S+ E#   Moff
+  // ROW 2: | X- Home X+ | [    ]
+  // ROW 3: Z-    Y-    E- [    ]
+  // ROW 4: Z#   Step   E#   Moff
+
   int x = 8, y = 8;
   drawBtn(x, y, "Z+", (intptr_t)z_plus, imgPrism64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET)); //only enabled when not busy or have baby step
   x += 128;
@@ -711,38 +716,40 @@ void MarlinUI::move_axis_screen() {
     drawCurStepValue(); 
     }
   x += 160;
-  motionAxisState.eNamePos.x = x+8;
-  motionAxisState.eNamePos.y = y+8;
-  if (!busy) {
-    drawBtn(x, y, "", (intptr_t)e_select, imgHotend64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
-    drawCurESelection(); 
-    }
+  #if EXTRUDERS > 1
+    motionAxisState.eNamePos.x = x+8;
+    motionAxisState.eNamePos.y = y+8;
+    if (!busy) {
+      drawBtn(x, y, "", (intptr_t)e_select, imgHotend64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
+      drawCurESelection(); 
+      }
+  #endif
   x += 136;
   drawBtn(x, y, "", (intptr_t)disable_steppers, imgStepperoff64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
 
 
-  // TODO: axes values display
+  // Draw axes values display
+  x = 352;
+  y = 112;
+  motionAxisState.xValuePos.x = x;
+  motionAxisState.xValuePos.y = y;
+  drawAxisValue(X_AXIS);
+  
+  y += 32;
+  motionAxisState.yValuePos.x = x;
+  motionAxisState.yValuePos.y = y;
+  drawAxisValue(Y_AXIS);
 
-  // // Cur E
-  // drawCurESelection();
-  // motionAxisState.eValuePos.x = x;
-  // motionAxisState.eValuePos.y = y + BTN_HEIGHT + 2;
-  // drawAxisValue(E_AXIS);
-
-  // // Cur X Y 
-  // motionAxisState.xValuePos.x = BTN_WIDTH + (TFT_WIDTH - X_MARGIN * 2 - 5 * BTN_WIDTH) / 4; //X- pos
-  // motionAxisState.xValuePos.y = y - 10;
-  // drawAxisValue(X_AXIS);
-
-  // motionAxisState.yValuePos.x = x + 2;
-  // motionAxisState.yValuePos.y = y;
-  // drawAxisValue(Y_AXIS);
-
-  // // Cur Z
-  // motionAxisState.zValuePos.x = x;
-  // motionAxisState.zValuePos.y = y + BTN_HEIGHT + 2;
-  // drawAxisValue(Z_AXIS);
-
+  y += 32;
+  motionAxisState.zValuePos.x = x;
+  motionAxisState.zValuePos.y = y;
+  drawAxisValue(Z_AXIS);
+  
+  y += 32;
+  drawCurESelection();
+  motionAxisState.eValuePos.x = x;
+  motionAxisState.eValuePos.y = y;
+  drawAxisValue(E_AXIS);
 }
 
 #endif // HAS_UI_480x320

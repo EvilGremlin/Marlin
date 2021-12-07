@@ -23,6 +23,25 @@
 
 #include "../../inc/MarlinConfigPre.h"
 
+#include "../marlinui.h"
+#include "../menu/menu.h"
+#include "../../libs/numtostr.h"
+
+#include "../../sd/cardreader.h"
+#include "../../module/temperature.h"
+#include "../../module/printcounter.h"
+#include "../../module/planner.h"
+#include "../../module/motion.h"
+
+#if DISABLED(LCD_PROGRESS_BAR) && BOTH(FILAMENT_LCD_DISPLAY, SDSUPPORT)
+  #include "../../feature/filwidth.h"
+  #include "../../gcode/parser.h"
+#endif
+
+#if ENABLED(AUTO_BED_LEVELING_UBL)
+  #include "../../feature/bedlevel/bedlevel.h"
+#endif
+
 #if ENABLED(NO_LCD_MENUS)
   #error "Seriously? High resolution TFT screen without menu?"
 #endif
