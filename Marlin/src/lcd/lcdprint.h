@@ -115,9 +115,9 @@
 
 #endif
 
-#ifndef MENU_LINE_HEIGHT
-  #define MENU_LINE_HEIGHT MENU_FONT_HEIGHT
-#endif
+// #ifndef MENU_LINE_HEIGHT
+//   #define MENU_LINE_HEIGHT MENU_FONT_HEIGHT
+// #endif
 
 #ifndef LCD_COL_X_RJ
   #define LCD_COL_X_RJ(len)    (LCD_PIXEL_WIDTH - LCD_COL_X(len))

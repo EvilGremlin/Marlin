@@ -26,8 +26,8 @@
 
 #include "ui_common.h"
 
-// #include "../marlinui.h"
-// #include "../menu/menu.h"
+#include "../marlinui.h"
+#include "../menu/menu.h"
 // #include "../../libs/numtostr.h"
 
 // #include "../../sd/cardreader.h"
@@ -44,6 +44,9 @@
 // #if ENABLED(AUTO_BED_LEVELING_UBL)
 //   #include "../../feature/bedlevel/bedlevel.h"
 // #endif
+
+MotionAxisState motionAxisState;
+
 
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
@@ -120,7 +123,6 @@ void MarlinUI::draw_kill_screen() {
 }
 
 void MarlinUI::draw_status_screen() {
-  // const bool blink = get_blink();
   uint16_t x = 24;
 
   TERN_(TOUCH_SCREEN, touch.clear());
@@ -400,26 +402,22 @@ void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const
   }
 #endif // AUTO_BED_LEVELING_UBL
 
-#if ENABLED(BABYSTEP_ZPROBE_OFFSET)
-  #include "../../feature/babystep.h"
-#endif
+// #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
+//   #include "../../feature/babystep.h"
+// #endif
 
-#if HAS_BED_PROBE
-  #include "../../module/probe.h"
-#endif
+// #if HAS_BED_PROBE
+//   #include "../../module/probe.h"
+// #endif
 
-struct MotionAxisState {
-  xy_int_t xValuePos, yValuePos, zValuePos, eValuePos, stepValuePos, zTypePos, eNamePos;
-  float currentStepSize = 10.0;
-  int z_selection = Z_SELECTION_Z;
-  uint8_t e_selection = 0;
-  bool blocked = false;
-  char message[32];
-};
-
-MotionAxisState motionAxisState;
-
-const bool blink = MarlinUI::get_blink();
+// struct MotionAxisState {
+//   xy_int_t xValuePos, yValuePos, zValuePos, eValuePos, stepValuePos, zTypePos, eNamePos;
+//   float currentStepSize = 10.0;
+//   int z_selection = Z_SELECTION_Z;
+//   uint8_t e_selection = 0;
+//   bool blocked = false;
+//   char message[32];
+// };
 
 static void quick_feedback() {
   #if HAS_CHIRP
@@ -463,20 +461,20 @@ static void drawCurESelection() {
   tft.add_text(0, 0, COLOR_ACTIVE , tft_string);
 }
 
-static void drawMessage(const char *msg) {
-  tft.canvas(352, 88, 120, 24);
-  tft.set_background(COLOR_BACKGROUND);
-  tft.add_text(0, 0, COLOR_RED2, msg);
+// TODO: make it messagebox with timeout and close button
+static void drawMessage(uint16_t color, const char *msg) {
+  tft.canvas(64, 64, 416, TFT_HEIGHT - 128);
+  tft.set_background(color);
+  tft.add_text(tft_string.center(240), (TFT_HEIGHT-128)/2-FONT_LINE_HEIGHT/2, COLOR_MENU_TEXT, msg);
 }
 
-// TODO: rewrite into something proper and universal
 static void drawAxisValue(const AxisEnum axis) {
   const float value = (
     TERN_(HAS_BED_PROBE, axis == Z_AXIS && motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? probe.offset.z :)
     ui.manual_move.axis_value(axis)
   );
   xy_int_t pos;
-  bool not_homed = axis_should_home(X_AXIS);
+  bool not_homed = axis_should_home(axis);
   switch (axis) {
     case X_AXIS: pos = motionAxisState.xValuePos; break;
     case Y_AXIS: pos = motionAxisState.yValuePos; break;
@@ -484,9 +482,9 @@ static void drawAxisValue(const AxisEnum axis) {
     case E_AXIS: pos = motionAxisState.eValuePos; break;
     default: return;
   }
-  tft.canvas(pos.x, pos.y, BTN_WIDTH + X_MARGIN, BTN_HEIGHT);
+  tft.canvas(pos.x, pos.y, 80, FONT_LINE_HEIGHT);
   tft.set_background(COLOR_BACKGROUND);
-  tft_string.set(blink && not_homed ? "?" : ftostr52sign(LOGICAL_X_POSITION(current_position.x)));
+  tft_string.set(blink && not_homed ? "?" : ftostr52sign(value));
   tft.add_text(0, 0, not_homed ? COLOR_AXIS_NOT_HOMED : COLOR_AXIS_HOMED, tft_string);
 }
 
@@ -495,7 +493,7 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
 
   #if ENABLED(PREVENT_COLD_EXTRUSION)
     if (axis == E_AXIS && thermalManager.tooColdToExtrude(motionAxisState.e_selection)) {
-      drawMessage("Too cold");
+      // drawMessage("Too cold");
       return;
     }
   #endif
@@ -518,25 +516,25 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
           probe.offset.z = new_offs;
         else
           TERN(BABYSTEP_HOTEND_Z_OFFSET, hotend_offset[active_extruder].z = new_offs, NOOP);
-        drawMessage(""); // clear the error
+        // drawMessage(""); // clear the error
         drawAxisValue(axis);
       }
       else {
-        drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
+        // drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
       }
     #elif HAS_BED_PROBE
       // only change probe.offset.z
       probe.offset.z += diff;
       if (direction < 0 && current_position[axis] < Z_PROBE_OFFSET_RANGE_MIN) {
         current_position[axis] = Z_PROBE_OFFSET_RANGE_MIN;
-        drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
+        // drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
       }
       else if (direction > 0 && current_position[axis] > Z_PROBE_OFFSET_RANGE_MAX) {
         current_position[axis] = Z_PROBE_OFFSET_RANGE_MAX;
-        drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
+        // drawMessage(GET_TEXT(MSG_LCD_SOFT_ENDSTOPS));
       }
       else {
-        drawMessage(""); // clear the error
+        // drawMessage(""); // clear the error
       }
       drawAxisValue(axis);
     #endif
@@ -563,7 +561,7 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
       UNUSED(limited);
     #else
       PGM_P const msg = limited ? GET_TEXT(MSG_LCD_SOFT_ENDSTOPS) : NUL_STR;
-      drawMessage(msg);
+      // drawMessage(msg);
     #endif
 
     ui.manual_move.soon(axis OPTARG(MULTI_E_MANUAL, motionAxisState.e_selection));
@@ -595,14 +593,10 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
 
   static void do_home() {
     quick_feedback();
-    drawMessage(GET_TEXT(MSG_LEVEL_BED_HOMING));
+    drawMessage(COLOR_MESSAGEBG, GET_TEXT(MSG_LEVEL_BED_HOMING));
     queue.inject_P(G28_STR);
     // Disable touch until home is done
     TERN_(HAS_TFT_XPT2046, touch.disable());
-    drawAxisValue(E_AXIS);
-    drawAxisValue(X_AXIS);
-    drawAxisValue(Y_AXIS);
-    drawAxisValue(Z_AXIS);
   }
 
   static void step_size() {
@@ -637,7 +631,7 @@ static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage 
   tft.set_background(bgColor);
   tft.add_image(0, 0, img, fgColor, bgColor, COLOR_SHADOW);
 
-  // TODO: Make an add_text() taking a font arg
+  // TODO: Make an add_text() take a font arg
   if (label) {
     tft_string.set(label);
     tft_string.trim();
@@ -727,26 +721,32 @@ void MarlinUI::move_axis_screen() {
   x += 136;
   drawBtn(x, y, "", (intptr_t)disable_steppers, imgStepperoff64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
 
-
   // Draw axes values display
-  x = 352;
-  y = 112;
+  x = 344; y = 88;
+  tft.canvas(x, y, 32, FONT_LINE_HEIGHT*4);
+  tft.set_background(COLOR_BACKGROUND);
+  tft.add_text(0, 0,                    COLOR_AXIS_HOMED, "X: ");
+  tft.add_text(0, FONT_LINE_HEIGHT,     COLOR_AXIS_HOMED, "Y: ");
+  tft.add_text(0, FONT_LINE_HEIGHT * 2, COLOR_AXIS_HOMED, "Z: ");
+  tft.add_text(0, FONT_LINE_HEIGHT * 3, COLOR_AXIS_HOMED, "E: ");
+
+  x += 32;
   motionAxisState.xValuePos.x = x;
   motionAxisState.xValuePos.y = y;
   drawAxisValue(X_AXIS);
   
-  y += 32;
+  y += FONT_LINE_HEIGHT;
   motionAxisState.yValuePos.x = x;
   motionAxisState.yValuePos.y = y;
   drawAxisValue(Y_AXIS);
 
-  y += 32;
+  y += FONT_LINE_HEIGHT;
   motionAxisState.zValuePos.x = x;
   motionAxisState.zValuePos.y = y;
   drawAxisValue(Z_AXIS);
   
-  y += 32;
-  drawCurESelection();
+  y += FONT_LINE_HEIGHT;
+  // drawCurESelection();
   motionAxisState.eValuePos.x = x;
   motionAxisState.eValuePos.y = y;
   drawAxisValue(E_AXIS);

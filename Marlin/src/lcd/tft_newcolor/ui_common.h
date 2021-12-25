@@ -42,6 +42,14 @@
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
 
+#if ENABLED(BABYSTEP_ZPROBE_OFFSET)
+  #include "../../feature/babystep.h"
+#endif
+
+#if HAS_BED_PROBE
+  #include "../../module/probe.h"
+#endif
+
 #if ENABLED(NO_LCD_MENUS)
   #error "Seriously? High resolution TFT screen without menu?"
 #endif
@@ -52,7 +60,6 @@
 #if ENABLED(TOUCH_SCREEN)
   #include "touch.h"
   extern bool draw_menu_navigation;
-
 #endif
 
 #if HAS_UI_320x240
@@ -64,12 +71,6 @@
 #else
   #error "Unsupported display resolution!"
 #endif
-
-// void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater);
-// void draw_fan_status(uint16_t x, uint16_t y, const bool blink);
-
-void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
-void menu_item(const uint8_t row, bool sel = false);
 
 #if HAS_TOUCH_SLEEP
   bool lcd_sleep_task();
@@ -109,3 +110,17 @@ void menu_item(const uint8_t row, bool sel = false);
   #define ITEM_FAN        2
   #define ITEMS_COUNT     3
 #endif
+
+const bool blink = MarlinUI::get_blink();
+
+struct MotionAxisState {
+  xy_int_t xValuePos, yValuePos, zValuePos, eValuePos, stepValuePos, zTypePos, eNamePos;
+  float currentStepSize = 10.0;
+  int z_selection = Z_SELECTION_Z;
+  uint8_t e_selection = 0;
+  bool blocked = false;
+  char message[32];
+};
+
+void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
+void menu_item(const uint8_t row, bool sel = false);

@@ -46,6 +46,7 @@
   #define MENU_ITEM_HEIGHT    36
   #define FONT_LINE_HEIGHT    24
 #endif
+
 #define MENU_LINE_HEIGHT      (MENU_ITEM_HEIGHT + 2)
 
 #define BTN_WIDTH 64

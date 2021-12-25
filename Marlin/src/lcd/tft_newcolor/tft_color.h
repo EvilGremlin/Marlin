@@ -53,6 +53,8 @@
 
 
 #define COLOR_BACKGROUND        COLOR_GREEN1
+#define COLOR_MESSAGEBG         COLOR_PURPLE1
+#define COLOR_ERRORBG           COLOR_RED1
 #define COLOR_SHADOW            COLOR_BLACK
 #define COLOR_LINES             COLOR_GREY2
 #define COLOR_SELECTION_BG      COLOR_BLUE1
