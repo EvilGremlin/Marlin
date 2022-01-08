@@ -121,6 +121,7 @@ void MarlinUI::draw_kill_screen() {
   tft.queue.sync();
 }
 
+// INPROGRESS
 void MarlinUI::draw_status_screen() {
   uint16_t x = 24;
 
@@ -204,6 +205,8 @@ void MarlinUI::draw_status_screen() {
   // else if (IsRunning) {}
 }
 
+
+// TODO
 // Low-level draw_edit_screen can be used to draw an edit screen from anyplace
 void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const value/*=nullptr*/) {
   ui.encoder_direction_normal();
@@ -265,6 +268,7 @@ void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const val
   tft.draw_edit_screen_buttons();
 }
 
+// TODO
 void TFT::draw_edit_screen_buttons() {
   #if ENABLED(TOUCH_SCREEN)
     add_control(64, TFT_HEIGHT - 64, DECREASE, imgDown48x4);
@@ -273,6 +277,7 @@ void TFT::draw_edit_screen_buttons() {
   #endif
 }
 
+// TODO
 // The Select Screen presents a prompt and two "buttons"
 void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const bool yesno, PGM_P const pref, const char * const string/*=nullptr*/, PGM_P const suff/*=nullptr*/) {
   uint16_t line = 1;
@@ -303,8 +308,8 @@ void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const
   #endif
 }
 
+// TODO
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
-
   void MarlinUI::draw_hotend_status(const uint8_t row, const uint8_t extruder) {
     #if ENABLED(TOUCH_SCREEN)
       touch.clear();
@@ -325,9 +330,9 @@ void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const
     tft_string.trim();
     tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
   }
-
 #endif // ADVANCED_PAUSE_FEATURE
 
+// TODO
 #if ENABLED(AUTO_BED_LEVELING_UBL)
   #define GRID_OFFSET_X   8
   #define GRID_OFFSET_Y   8
@@ -401,6 +406,7 @@ void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const
   }
 #endif // AUTO_BED_LEVELING_UBL
 
+// DONE
 static void quick_feedback() {
   #if HAS_CHIRP
     ui.chirp(); // Buzz and wait. Is the delay needed for buttons to settle?
@@ -412,6 +418,7 @@ static void quick_feedback() {
   #endif
 }
 
+// DONE
 static void drawCurStepValue() {
   tft_string.set((uint8_t *)ftostr52sp(motionAxisState.currentStepSize));
   tft_string.add("mm");
@@ -420,22 +427,23 @@ static void drawCurStepValue() {
   tft.add_text(tft_string.center(CUR_STEP_VALUE_WIDTH), 0, COLOR_AXIS_HOMED, tft_string);
 }
 
-// TODO: fix this drawing
+// DONE
 static void drawCurESelection() {
-  tft_string.set("E");
-  tft_string.add(ui8tostr3rj(motionAxisState.e_selection));
+  tft_string.set("*", motionAxisState.e_selection);
   tft.canvas(motionAxisState.eNamePos.x, motionAxisState.eNamePos.y, 32, 32);
   tft.set_background(COLOR_BACKGROUND);
   tft.add_text(0, 0, COLOR_ACTIVE , tft_string);
+  tft.queue.sync();
 }
 
-// TODO: make it messagebox with timeout and close button
+// TODO: make it messagebox with timeout and close button ?
 static void drawMessage(uint16_t color, const char *msg) {
   tft.canvas(64, 64, 416, TFT_HEIGHT - 128);
   tft.set_background(color);
   tft.add_text(tft_string.center(240), (TFT_HEIGHT-128)/2-FONT_LINE_HEIGHT/2, COLOR_MENU_TEXT, msg);
 }
 
+// DONE
 static void drawAxisValue(const AxisEnum axis) {
   const float value = (
     TERN_(HAS_BED_PROBE, axis == Z_AXIS && motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? probe.offset.z :)
@@ -456,6 +464,7 @@ static void drawAxisValue(const AxisEnum axis) {
   tft.add_text(0, 0, not_homed ? COLOR_AXIS_NOT_HOMED : COLOR_AXIS_HOMED, tft_string);
 }
 
+// TODO: messages
 static void moveAxis(const AxisEnum axis, const int8_t direction) {
   quick_feedback();
 
@@ -538,6 +547,7 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
   drawAxisValue(axis);
 }
 
+// DONE
 static void e_plus()  { moveAxis(E_AXIS, 1);  }
 static void e_minus() { moveAxis(E_AXIS, -1); }
 static void x_minus() { moveAxis(X_AXIS, -1); }
@@ -548,17 +558,18 @@ static void z_plus()  { moveAxis(Z_AXIS, 1);  }
 static void z_minus() { moveAxis(Z_AXIS, -1); }
 
 #if ENABLED(TOUCH_SCREEN)
+  // DONE
   static void e_select() {
     motionAxisState.e_selection++;
     if (motionAxisState.e_selection >= EXTRUDERS) {
       motionAxisState.e_selection = 0;
     }
-
     quick_feedback();
     drawCurESelection();
     drawAxisValue(E_AXIS);
   }
 
+  // DONE
   static void do_home() {
     quick_feedback();
     drawMessage(COLOR_MESSAGEBG, GET_TEXT(MSG_LEVEL_BED_HOMING));
@@ -566,7 +577,8 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
     // Disable touch until home is done
     TERN_(HAS_TFT_XPT2046, touch.disable());
   }
-
+  
+  // DONE
   static void step_size() {
     motionAxisState.currentStepSize = motionAxisState.currentStepSize / 10.0;
     if (motionAxisState.currentStepSize < 0.0015) motionAxisState.currentStepSize = 10.0;
@@ -575,6 +587,7 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
   }
 #endif
 
+// DONE
 #if ANY(HAS_BED_PROBE, BABYSTEPPING)
   static void z_select() {
     motionAxisState.z_selection *= -1;
@@ -587,11 +600,13 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
   }
 #endif
 
+// DONE
 static void disable_steppers() {
   quick_feedback();
   queue.inject(F("M84"));
 }
 
+// DONE
 static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled = true) {
   uint16_t width = Images[img].width;
   uint16_t height = Images[img].height;
@@ -602,7 +617,6 @@ static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage 
   tft.set_background(bgColor);
   tft.add_image(0, 0, img, fgColor, bgColor, COLOR_SHADOW);
 
-  // TODO: Make an add_text() take a font arg
   if (label) {
     tft_string.set(label);
     tft_string.trim();
@@ -615,14 +629,13 @@ static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage 
   TERN_(HAS_TFT_XPT2046, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
 }
 
+// DONE
 void MarlinUI::move_axis_screen() {
   // Reset
   defer_status_screen(true);
   motionAxisState.blocked = false;
   TERN_(HAS_TFT_XPT2046, touch.enable());
-
   ui.clear_lcd();
-
   TERN_(TOUCH_SCREEN, touch.clear());
 
   // Draw controls layout
