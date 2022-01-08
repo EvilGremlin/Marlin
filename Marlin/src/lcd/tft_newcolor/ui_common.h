@@ -112,6 +112,7 @@
 #endif
 
 const bool blink = MarlinUI::get_blink();
+const bool busy = printingIsActive();
 
 struct MotionAxisState {
   xy_int_t xValuePos, yValuePos, zValuePos, eValuePos, stepValuePos, zTypePos, eNamePos;

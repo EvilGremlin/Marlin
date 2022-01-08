@@ -47,7 +47,6 @@
 
 MotionAxisState motionAxisState;
 
-
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
     if (TERN0(HAS_TOUCH_SLEEP, lcd_sleep_task())) return;
@@ -402,23 +401,6 @@ void MenuItem_confirm::draw_select_screen(PGM_P const yes, PGM_P const no, const
   }
 #endif // AUTO_BED_LEVELING_UBL
 
-// #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
-//   #include "../../feature/babystep.h"
-// #endif
-
-// #if HAS_BED_PROBE
-//   #include "../../module/probe.h"
-// #endif
-
-// struct MotionAxisState {
-//   xy_int_t xValuePos, yValuePos, zValuePos, eValuePos, stepValuePos, zTypePos, eNamePos;
-//   float currentStepSize = 10.0;
-//   int z_selection = Z_SELECTION_Z;
-//   uint8_t e_selection = 0;
-//   bool blocked = false;
-//   char message[32];
-// };
-
 static void quick_feedback() {
   #if HAS_CHIRP
     ui.chirp(); // Buzz and wait. Is the delay needed for buttons to settle?
@@ -436,20 +418,6 @@ static void drawCurStepValue() {
   tft.canvas(motionAxisState.stepValuePos.x, motionAxisState.stepValuePos.y, CUR_STEP_VALUE_WIDTH, 32);
   tft.set_background(COLOR_BACKGROUND);
   tft.add_text(tft_string.center(CUR_STEP_VALUE_WIDTH), 0, COLOR_AXIS_HOMED, tft_string);
-}
-
-static void drawCurZSelection() {
-  tft_string.set("Z");
-  tft.canvas(motionAxisState.zTypePos.x, motionAxisState.zTypePos.y, tft_string.width(), 34);
-  tft.set_background(COLOR_BACKGROUND);
-  tft.add_text(0, 0, COLOR_BLACK, tft_string);
-  tft.queue.sync();
-  tft_string.set("Offset");
-  tft.canvas(motionAxisState.zTypePos.x, motionAxisState.zTypePos.y + 34, tft_string.width(), 34);
-  tft.set_background(COLOR_BACKGROUND);
-  if (motionAxisState.z_selection == Z_SELECTION_Z_PROBE) {
-    tft.add_text(0, 0, COLOR_BLACK, tft_string);
-  }
 }
 
 // TODO: fix this drawing
@@ -607,12 +575,15 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
   }
 #endif
 
-#if HAS_BED_PROBE
+#if ANY(HAS_BED_PROBE, BABYSTEPPING)
   static void z_select() {
     motionAxisState.z_selection *= -1;
     quick_feedback();
-    drawCurZSelection();
+    MarlinImage img = motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? imgBedzoffset64x64x4 : imgMovez64x64x4;
+    tft.canvas(motionAxisState.zTypePos.x, motionAxisState.zTypePos.y, 64, 64);
+    tft.add_image(0, 0, img, COLOR_ACTIVE, COLOR_BACKGROUND, COLOR_SHADOW);
     drawAxisValue(Z_AXIS);
+    tft.queue.sync();
   }
 #endif
 
@@ -654,12 +625,6 @@ void MarlinUI::move_axis_screen() {
 
   TERN_(TOUCH_SCREEN, touch.clear());
 
-  const bool busy = printingIsActive();
-
-  // Babysteps during printing? Select babystep for Z probe offset
-  if (busy && ENABLED(BABYSTEP_ZPROBE_OFFSET))
-    motionAxisState.z_selection = Z_SELECTION_Z_PROBE;
-
   // Draw controls layout
   // ROW 1: Z+    Y+    E+   Back
   // ROW 2: | X- Home X+ | [    ]
@@ -691,17 +656,15 @@ void MarlinUI::move_axis_screen() {
   x += 128;
   drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
   
-  tft.canvas(16, 245, 2, 224);
-  tft.set_background(COLOR_LINES);
   x = 8; y += 80;
-  // TODO: changing icon between move and offset
-  // motionAxisState.zTypePos.x = x;
-  // motionAxisState.zTypePos.y = y;
-  // drawCurZSelection();
-  // #if BOTH(HAS_BED_PROBE, TOUCH_SCREEN)
-  //   if (!busy) touch.add_control(BUTTON, x, y, BTN_WIDTH, 34 * 2, (intptr_t)z_select);
-  // #endif
-  drawBtn(x, y, "", (intptr_t)z_select, imgMovez64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
+  #if ANY(HAS_BED_PROBE, BABYSTEPPING)
+    motionAxisState.z_selection = busy && ENABLED(BABYSTEPPING) ? Z_SELECTION_Z_PROBE : Z_SELECTION_Z;
+    motionAxisState.zTypePos.x = x;
+    motionAxisState.zTypePos.y = y;
+    touch.add_control(BUTTON, x, y, 64, 64, (intptr_t)z_select);
+    z_select();
+  #endif
+  
   x += 96;
   motionAxisState.stepValuePos.x = x+10;
   motionAxisState.stepValuePos.y = y+16;
@@ -709,6 +672,7 @@ void MarlinUI::move_axis_screen() {
     drawBtn(x, y, "", (intptr_t)step_size, imgPrism128x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
     drawCurStepValue(); 
     }
+  
   x += 160;
   #if EXTRUDERS > 1
     motionAxisState.eNamePos.x = x+8;
@@ -718,6 +682,7 @@ void MarlinUI::move_axis_screen() {
       drawCurESelection(); 
       }
   #endif
+  
   x += 136;
   drawBtn(x, y, "", (intptr_t)disable_steppers, imgStepperoff64x64x4, COLOR_ACTIVE, COLOR_BACKGROUND, !busy);
 
@@ -746,7 +711,6 @@ void MarlinUI::move_axis_screen() {
   drawAxisValue(Z_AXIS);
   
   y += FONT_LINE_HEIGHT;
-  // drawCurESelection();
   motionAxisState.eValuePos.x = x;
   motionAxisState.eValuePos.y = y;
   drawAxisValue(E_AXIS);
