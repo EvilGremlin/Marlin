@@ -15,7 +15,7 @@ if pioutil.is_pio_build():
 	FEATURE_CONFIG = {}
 
 	def validate_pio():
-		PIO_VERSION_MIN = (5, 0, 3)
+		PIO_VERSION_MIN = (6, 0, 1)
 		try:
 			from platformio import VERSION as PIO_VERSION
 			weights = (1000, 100, 1)
@@ -174,7 +174,7 @@ if pioutil.is_pio_build():
 				env.SConscript(feat['extra_scripts'], exports="env")
 
 			if 'src_filter' in feat:
-				blab("========== Adding src_filter for %s... " % feature, 2)
+				blab("========== Adding build_src_filter for %s... " % feature, 2)
 				src_filter = ' '.join(env.GetProjectOption('src_filter'))
 				# first we need to remove the references to the same folder
 				my_srcs = re.findall(r'[+-](<.*?>)', feat['src_filter'])
@@ -184,70 +184,13 @@ if pioutil.is_pio_build():
 						src_filter = re.sub(r'[+-]' + d, '', src_filter)
 
 				src_filter = feat['src_filter'] + ' ' + src_filter
-				set_env_field('src_filter', [src_filter])
+				set_env_field('build_src_filter', [src_filter])
 				env.Replace(SRC_FILTER=src_filter)
 
 			if 'lib_ignore' in feat:
 				blab("========== Adding lib_ignore for %s... " % feature, 2)
 				lib_ignore = env.GetProjectOption('lib_ignore') + [feat['lib_ignore']]
 				set_env_field('lib_ignore', lib_ignore)
-
-	#
-	# Find a compiler, considering the OS
-	#
-	ENV_BUILD_PATH = os.path.join(env.Dictionary('PROJECT_BUILD_DIR'), env['PIOENV'])
-	GCC_PATH_CACHE = os.path.join(ENV_BUILD_PATH, ".gcc_path")
-	def search_compiler():
-		try:
-			filepath = env.GetProjectOption('custom_gcc')
-			blab("Getting compiler from env")
-			return filepath
-		except:
-			pass
-
-		if os.path.exists(GCC_PATH_CACHE):
-			with open(GCC_PATH_CACHE, 'r') as f:
-				return f.read()
-
-		# Find the current platform compiler by searching the $PATH
-		# which will be in a platformio toolchain bin folder
-		path_regex = re.escape(env['PROJECT_PACKAGES_DIR'])
-
-		# See if the environment provides a default compiler
-		try:
-			gcc = env.GetProjectOption('custom_deps_gcc')
-		except:
-			gcc = "g++"
-
-		if env['PLATFORM'] == 'win32':
-			path_separator = ';'
-			path_regex += r'.*\\bin'
-			gcc += ".exe"
-		else:
-			path_separator = ':'
-			path_regex += r'/.+/bin'
-
-		# Search for the compiler
-		for pathdir in env['ENV']['PATH'].split(path_separator):
-			if not re.search(path_regex, pathdir, re.IGNORECASE):
-				continue
-			for filepath in os.listdir(pathdir):
-				if not filepath.endswith(gcc):
-					continue
-				# Use entire path to not rely on env PATH
-				filepath = os.path.sep.join([pathdir, filepath])
-				# Cache the g++ path to no search always
-				if os.path.exists(ENV_BUILD_PATH):
-					with open(GCC_PATH_CACHE, 'w+') as f:
-						f.write(filepath)
-
-				return filepath
-
-		filepath = env.get('CXX')
-		if filepath == 'CC':
-			filepath = gcc
-		blab("Couldn't find a compiler! Fallback to %s" % filepath)
-		return filepath
 
 	#
 	# Use the compiler to get a list of all enabled features
@@ -257,25 +200,8 @@ if pioutil.is_pio_build():
 			return
 
 		# Process defines
-		build_flags = env.get('BUILD_FLAGS')
-		build_flags = env.ParseFlagsExtended(build_flags)
-
-		cxx = search_compiler()
-		cmd = ['"' + cxx + '"']
-
-		# Build flags from board.json
-		#if 'BOARD' in env:
-		#	cmd += [env.BoardConfig().get("build.extra_flags")]
-		for s in build_flags['CPPDEFINES']:
-			if isinstance(s, tuple):
-				cmd += ['-D' + s[0] + '=' + str(s[1])]
-			else:
-				cmd += ['-D' + s]
-
-		cmd += ['-D__MARLIN_DEPS__ -w -dM -E -x c++ buildroot/share/PlatformIO/scripts/common-dependencies.h']
-		cmd = ' '.join(cmd)
-		blab(cmd, 4)
-		define_list = subprocess.check_output(cmd, shell=True).splitlines()
+		from preprocessor import run_preprocessor
+		define_list = run_preprocessor(env)
 		marlin_features = {}
 		for define in define_list:
 			feature = define[8:].strip().decode().split(' ')
@@ -310,9 +236,18 @@ if pioutil.is_pio_build():
 	except:
 		pass
 
+	#
 	# Add a method for other PIO scripts to query enabled features
+	#
 	env.AddMethod(MarlinFeatureIsEnabled)
 
+	#
 	# Add dependencies for enabled Marlin features
+	#
 	apply_features_config()
 	force_ignore_unused_libs()
+
+	#print(env.Dump())
+
+	from signature import compute_build_signature
+	compute_build_signature(env)
