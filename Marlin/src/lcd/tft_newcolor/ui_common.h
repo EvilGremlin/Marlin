@@ -72,6 +72,12 @@
   #error "Unsupported display resolution!"
 #endif
 
+void draw_heater_status(uint16_t x, uint16_t y, const int8_t Heater);
+void draw_fan_status(uint16_t x, uint16_t y, const bool blink);
+
+void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
+void menu_item(const uint8_t row, bool sel = false);
+
 #if HAS_TOUCH_SLEEP
   bool lcd_sleep_task();
 #endif
@@ -123,5 +129,3 @@ struct MotionAxisState {
   char message[32];
 };
 
-void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
-void menu_item(const uint8_t row, bool sel = false);
