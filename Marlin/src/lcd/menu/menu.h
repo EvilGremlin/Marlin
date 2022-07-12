@@ -210,6 +210,14 @@ void menu_move();
   void menu_media();
 #endif
 
+#if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
+  void menu_led();
+#endif
+
+#if ENABLED(ADVANCED_PAUSE_FEATURE)
+  void menu_change_filament();
+#endif
+
 ////////////////////////////////////////////
 //////// Menu Item Helper Functions ////////
 ////////////////////////////////////////////

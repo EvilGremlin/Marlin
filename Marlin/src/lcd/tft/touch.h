@@ -45,7 +45,7 @@ extern int8_t encoderTopLine, encoderLine, screen_items;
 
 enum TouchControlType : uint16_t {
   NONE = 0x0000,
-  CALIBRATE,
+  CALIBRATE_TOUCHSCREEN,
   MENU_SCREEN,
   MENU_ITEM,
   BACK,
@@ -63,8 +63,8 @@ enum TouchControlType : uint16_t {
   FAN,
   FEEDRATE,
   FLOWRATE,
-  UBL,
-  MOVE_AXIS,
+  SCREEN_UBL,
+  SCREEN_MOVE_AXIS,
   BUTTON,
 };
 

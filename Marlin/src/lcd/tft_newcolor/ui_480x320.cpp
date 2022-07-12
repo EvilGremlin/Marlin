@@ -123,7 +123,7 @@ void MarlinUI::draw_kill_screen() {
 
 // INPROGRESS
 void MarlinUI::draw_status_screen() {
-  uint16_t x = 24;
+  uint16_t x = 24, y = 80;
 
   TERN_(TOUCH_SCREEN, touch.clear());
 
@@ -136,38 +136,38 @@ void MarlinUI::draw_status_screen() {
 
   if (IsStopped) {
     // TODO: will open temperature screen
-    tft.canvas(x, 80, 96, 96);
+    tft.canvas(x, y, 96, 96);
     tft.set_background(COLOR_BACKGROUND);
     tft.add_image(0, 0, imgThermo96x4, COLOR_CONTROL_ENABLED);
     TERN_(TOUCH_SCREEN, touch.add_control(HEATER, x, 80, 96, 96));
     x += 112;
 
-    // TODO: will open feeed/fan/etc/tuning screen
-    tft.canvas(x, 80, 96, 96);
+    // TODO: will open feed/fan/etc tuning screen
+    tft.canvas(x, y, 96, 96);
     tft.set_background(COLOR_BACKGROUND);
     tft.add_image(0, 0, imgPrintingtune96x4, COLOR_CONTROL_ENABLED);
     TERN_(TOUCH_SCREEN, touch.add_control(FEEDRATE, x, 80, 96, 96));
     x += 112;
 
     // REDO: open settings (standard marlin menu)
-    tft.canvas(x, 80, 96, 96);
+    tft.canvas(x, y, 96, 96);
     tft.set_background(COLOR_BACKGROUND);
     tft.add_image(0, 0, imgCogs296x4, COLOR_CONTROL_ENABLED);
     TERN_(TOUCH_SCREEN, touch.add_control(MENU_MAIN, x, 80, 96, 96));
     x += 112;
 
-    // TODO: open movement screen
-    tft.canvas(x, 80, 96, 96);
+    //DONE Open movement screen
+    tft.canvas(x, y, 96, 96);
     tft.set_background(COLOR_BACKGROUND);
     tft.add_image(0, 0, imgMoveall96x4, COLOR_CONTROL_ENABLED);
-    TERN_(TOUCH_SCREEN, touch.add_control(MOVE_AXIS, x, 80, 96, 96));
+    TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_MOVE_AXIS, x, 80, 96, 96));
 
     x = 24;
-    // y += TERN(HAS_UI_480x272, 28, 36);
+    y = TERN(HAS_UI_480x272, 192, 208);
 
-      // open SD card menu
+      // Open SD card menu
       #if ENABLED(SDSUPPORT)
-        tft.canvas(x, 208, 96, 96);
+        tft.canvas(x, y, 96, 96);
         tft.set_background(COLOR_BACKGROUND);
         tft.add_image(0, 0, imgSdv196x4, COLOR_CONTROL_ENABLED);
         TERN_(TOUCH_SCREEN, touch.add_control(MENU_MEDIA, x, 208, 96, 96)); 
@@ -176,28 +176,28 @@ void MarlinUI::draw_status_screen() {
 
       //TODO: leveling options screen & leveling screens
     #if ENABLED(AUTO_BED_LEVELING_UBL)
-        tft.canvas(x, 208, 96, 96);
+        tft.canvas(x, y, 96, 96);
         tft.set_background(COLOR_BACKGROUND);
         tft.add_image(0, 0, imgBedleveling96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(UBL, x, 208, 96, 96)); 
+        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_UBL, x, 208, 96, 96)); 
         x += 112;
       #endif
 
-      // TODO: light controls screen
-      #if ANY(NEOPIXEL_LED, CASE_LIGHT_ENABLE)
-        tft.canvas(x, 208, 96, 96);
+      // TODO: LED controls screen
+      #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
+        tft.canvas(x, y, 96, 96);
         tft.set_background(COLOR_BACKGROUND);
         tft.add_image(0, 0, imgChamberlight96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(FAN, x, 208, 96, 96)); 
+        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_LED, x, 208, 96, 96)); 
         x += 112;
       #endif
 
       // TODO: filament change screen
       #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
-        tft.canvas(x, 208, 96, 96);
+        tft.canvas(x, y, 96, 96);
         tft.set_background(COLOR_BACKGROUND);
         tft.add_image(0, 0, imgSpool96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(FLOWRATE, x, 208, 96, 96)); 
+        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_FILCHANGE, x, 208, 96, 96)); 
         x += 112;
       #endif
   }
@@ -307,7 +307,7 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
   #endif
 }
 
-// TODO
+// TODO merge with filchange screen
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   void MarlinUI::draw_hotend_status(const uint8_t row, const uint8_t extruder) {
     #if ENABLED(TOUCH_SCREEN)
@@ -324,7 +324,7 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
     tft_string.add(i16tostr3rj(thermalManager.wholeDegHotend(extruder)));
     tft_string.add(LCD_STR_DEGREE);
     tft_string.add(F(" / "));
-    tft_string.add(i16tostr3rj(thermalManager.degTargetHotend(extruder)));
+    tft_string.add(i16tostr3rj(thermalManager.degTargetHotend(extruder))); 
     tft_string.add(LCD_STR_DEGREE);
     tft_string.trim();
     tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
@@ -395,10 +395,10 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
     #if ENABLED(TOUCH_SCREEN)
       touch.clear();
       draw_menu_navigation = false;
-      add_control(GRID_OFFSET_X + GRID_WIDTH + CONTROL_OFFSET,      GRID_OFFSET_Y + CONTROL_OFFSET,                    UBL,  (ENCODER_STEPS_PER_MENU_ITEM) * (GRID_MAX_POINTS_X), imgUp48x4);
-      add_control(GRID_OFFSET_X + GRID_WIDTH + CONTROL_OFFSET,      GRID_OFFSET_Y + GRID_HEIGHT - CONTROL_OFFSET - 32, UBL, -(ENCODER_STEPS_PER_MENU_ITEM) * (GRID_MAX_POINTS_X), imgDown48x4);
-      add_control(GRID_OFFSET_X + CONTROL_OFFSET,                   GRID_OFFSET_Y + GRID_HEIGHT + CONTROL_OFFSET,      UBL, -(ENCODER_STEPS_PER_MENU_ITEM), imgLeft48x4);
-      add_control(GRID_OFFSET_X + GRID_WIDTH - CONTROL_OFFSET - 32, GRID_OFFSET_Y + GRID_HEIGHT + CONTROL_OFFSET,      UBL,   ENCODER_STEPS_PER_MENU_ITEM, imgRight48x4);
+      add_control(GRID_OFFSET_X + GRID_WIDTH + CONTROL_OFFSET,      GRID_OFFSET_Y + CONTROL_OFFSET,                    SCREEN_UBL,  (ENCODER_STEPS_PER_MENU_ITEM) * (GRID_MAX_POINTS_X), imgUp48x4);
+      add_control(GRID_OFFSET_X + GRID_WIDTH + CONTROL_OFFSET,      GRID_OFFSET_Y + GRID_HEIGHT - CONTROL_OFFSET - 32, SCREEN_UBL, -(ENCODER_STEPS_PER_MENU_ITEM) * (GRID_MAX_POINTS_X), imgDown48x4);
+      add_control(GRID_OFFSET_X + CONTROL_OFFSET,                   GRID_OFFSET_Y + GRID_HEIGHT + CONTROL_OFFSET,      SCREEN_UBL, -(ENCODER_STEPS_PER_MENU_ITEM), imgLeft48x4);
+      add_control(GRID_OFFSET_X + GRID_WIDTH - CONTROL_OFFSET - 32, GRID_OFFSET_Y + GRID_HEIGHT + CONTROL_OFFSET,      SCREEN_UBL,   ENCODER_STEPS_PER_MENU_ITEM, imgRight48x4);
       add_control(320, GRID_OFFSET_Y + GRID_HEIGHT + CONTROL_OFFSET, CLICK, imgBedleveling64x4);
       add_control(224, TFT_HEIGHT - 34, BACK, imgBackv148x4);
     #endif
@@ -632,7 +632,7 @@ static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage 
 }
 
 // DONE
-void MarlinUI::move_axis_screen() {
+void MarlinUI::screen_movement() {
   // Reset
   defer_status_screen(true);
   motionAxisState.blocked = false;

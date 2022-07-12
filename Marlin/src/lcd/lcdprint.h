@@ -92,7 +92,7 @@
 
   // Graphical LCD uses the menu font size for cursor positioning
   #define LCD_COL_X(col) ((    (col)) * (MENU_FONT_WIDTH))
-  #define LCD_ROW_Y(row) ((1 + (row)) * (MENU_LINE_HEIGHT))
+  #define LCD_ROW_Y(row) ((1 + (row)) * (MENU_FONT_HEIGHT))
 
 #else
 

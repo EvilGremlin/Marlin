@@ -28,6 +28,7 @@
 
 #include "../marlinui.h"  // for ui methods
 #include "../menu/menu_item.h" // for touch_screen_calibration
+#include "../menu/menu.h" // for touch_screen_calibration
 
 #include "../../module/temperature.h"
 #include "../../module/planner.h"
@@ -124,7 +125,7 @@ void Touch::idle() {
       }
       else {
         for (i = 0; i < controls_count; i++) {
-          if ((WITHIN(x, controls[i].x, controls[i].x + controls[i].width) && WITHIN(y, controls[i].y, controls[i].y + controls[i].height)) || (TERN(TOUCH_SCREEN_CALIBRATION, controls[i].type == CALIBRATE, false))) {
+          if ((WITHIN(x, controls[i].x, controls[i].x + controls[i].width) && WITHIN(y, controls[i].y, controls[i].y + controls[i].height)) || (TERN(TOUCH_SCREEN_CALIBRATION, controls[i].type == CALIBRATE_TOUCHSCREEN, false))) {
             touch_control_type = controls[i].type;
             touch(&controls[i]);
             break;
@@ -238,12 +239,33 @@ void Touch::touch(touch_control_t *control) {
       break;
 
     #if ENABLED(AUTO_BED_LEVELING_UBL)
-      case UBL: hold(control, UBL_REPEAT_DELAY); ui.encoderPosition += control->data; break;
+      case SCREEN_UBL: hold(control, UBL_REPEAT_DELAY); ui.encoderPosition += control->data; break;
     #endif
 
-    case MOVE_AXIS:
-      ui.goto_screen((screenFunc_t)ui.move_axis_screen);
+    case SCREEN_MOVE_AXIS:
+      ui.goto_screen((screenFunc_t)ui.screen_movement);
       break;
+
+    case SCREEN_FILCHANGE:
+      // ui.goto_screen((screenFunc_t)ui.screen_filchange);
+      ui.goto_screen(menu_change_filament);
+      break;
+
+    case SCREEN_LED:
+      // ui.goto_screen((screenFunc_t)ui.screen_led);
+      ui.goto_screen(menu_led);
+      break;
+
+    // case SCREEN_FILCHANGE:
+    //   // ui.goto_screen((screenFunc_t)ui.filchange_screen);
+    //   ui.goto_screen(menu_change_filament);
+    //   break;
+
+    // case SCREEN_FILCHANGE:
+    //   // ui.goto_screen((screenFunc_t)ui.filchange_screen);
+    //   ui.goto_screen(menu_change_filament);
+    //   break;
+
 
     // TODO: TOUCH could receive data to pass to the callback
     case BUTTON: ((screenFunc_t)control->data)(); break;
