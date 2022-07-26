@@ -78,6 +78,48 @@ void draw_fan_status(uint16_t x, uint16_t y, const bool blink);
 void menu_line(const uint8_t row, uint16_t color=COLOR_BACKGROUND);
 void menu_item(const uint8_t row, bool sel = false);
 
+// void quick_feedback();
+// void disable_steppers();
+
+static void quick_feedback() {
+  #if HAS_CHIRP
+    ui.chirp(); // Buzz and wait. Is the delay needed for buttons to settle?
+    #if BOTH(HAS_MARLINUI_MENU, HAS_BEEPER)
+      for (int8_t i = 5; i--;) { buzzer.tick(); delay(2); }
+    #elif HAS_MARLINUI_MENU
+      delay(10);
+    #endif
+  #endif
+}
+
+static void disable_steppers() {
+  quick_feedback();
+  queue.inject(F("M84"));
+}
+
+// DONE
+static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled = true) {
+  uint16_t width = Images[img].width;
+  uint16_t height = Images[img].height;
+
+  if (!enabled) fgColor = COLOR_CONTROL_DISABLED;
+
+  tft.canvas(x, y, width, height);
+  tft.set_background(bgColor);
+  tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
+
+  if (label) {
+    tft_string.set(label);
+    tft_string.trim();
+    tft.add_text(tft_string.center(width), height / 2 - tft_string.font_height() / 2, fgColor, tft_string);
+  }
+  else {
+    tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
+  }
+
+  TERN_(TOUCH_SCREEN, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
+}
+
 #if HAS_TOUCH_SLEEP
   bool lcd_sleep_task();
 #endif

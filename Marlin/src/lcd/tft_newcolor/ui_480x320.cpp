@@ -121,6 +121,29 @@ void MarlinUI::draw_kill_screen() {
   tft.queue.sync();
 }
 
+// // DONE
+// static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled = true) {
+//   uint16_t width = Images[img].width;
+//   uint16_t height = Images[img].height;
+
+//   if (!enabled) fgColor = COLOR_CONTROL_DISABLED;
+
+//   tft.canvas(x, y, width, height);
+//   tft.set_background(bgColor);
+//   tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
+
+//   if (label) {
+//     tft_string.set(label);
+//     tft_string.trim();
+//     tft.add_text(tft_string.center(width), height / 2 - tft_string.font_height() / 2, fgColor, tft_string);
+//   }
+//   else {
+//     tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
+//   }
+
+//   TERN_(TOUCH_SCREEN, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
+// }
+
 // INPROGRESS
 void MarlinUI::draw_status_screen() {
   uint16_t x = 24, y = 80;
@@ -136,70 +159,78 @@ void MarlinUI::draw_status_screen() {
 
   if (IsStopped) {
     // TODO: will open temperature screen
-    tft.canvas(x, y, 96, 96);
-    tft.set_background(COLOR_BACKGROUND);
-    tft.add_image(0, 0, imgThermo96x4, COLOR_CONTROL_ENABLED);
-    TERN_(TOUCH_SCREEN, touch.add_control(HEATER, x, 80, 96, 96));
+    drawBtn(x, y, "", HEATER, imgThermo96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
+    // tft.canvas(x, y, 96, 96);
+    // tft.set_background(COLOR_BACKGROUND);
+    // tft.add_image(0, 0, , COLOR_CONTROL_ENABLED);
+    // TERN_(TOUCH_SCREEN, touch.add_control(HEATER, x, 80, 96, 96));
     x += 112;
 
     // TODO: will open feed/fan/etc tuning screen
-    tft.canvas(x, y, 96, 96);
-    tft.set_background(COLOR_BACKGROUND);
-    tft.add_image(0, 0, imgPrintingtune96x4, COLOR_CONTROL_ENABLED);
-    TERN_(TOUCH_SCREEN, touch.add_control(FEEDRATE, x, 80, 96, 96));
+    drawBtn(x, y, "", FEEDRATE, imgPrintingtune96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    // tft.canvas(x, y, 96, 96);
+    // tft.set_background(COLOR_BACKGROUND);
+    // tft.add_image(0, 0, imgPrintingtune96x4, COLOR_CONTROL_ENABLED);
+    // TERN_(TOUCH_SCREEN, touch.add_control(FEEDRATE, x, 80, 96, 96));
     x += 112;
 
     // REDO: open settings (standard marlin menu)
-    tft.canvas(x, y, 96, 96);
-    tft.set_background(COLOR_BACKGROUND);
-    tft.add_image(0, 0, imgCogs296x4, COLOR_CONTROL_ENABLED);
-    TERN_(TOUCH_SCREEN, touch.add_control(MENU_MAIN, x, 80, 96, 96));
+    drawBtn(x, y, "", (intptr_t)goto_screen(menu_main), imgCogs296x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    // tft.canvas(x, y, 96, 96);
+    // tft.set_background(COLOR_BACKGROUND);
+    // tft.add_image(0, 0, imgCogs296x4, COLOR_CONTROL_ENABLED);
+    // TERN_(TOUCH_SCREEN, touch.add_control(MENU_MAIN, x, 80, 96, 96));
     x += 112;
 
     //DONE Open movement screen
-    tft.canvas(x, y, 96, 96);
-    tft.set_background(COLOR_BACKGROUND);
-    tft.add_image(0, 0, imgMoveall96x4, COLOR_CONTROL_ENABLED);
-    TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_MOVE_AXIS, x, 80, 96, 96));
+    drawBtn(x, y, "", (intptr_t)goto_screen((screenFunc_t)screen_movement), imgMoveall96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    // tft.canvas(x, y, 96, 96);
+    // tft.set_background(COLOR_BACKGROUND);
+    // tft.add_image(0, 0, imgMoveall96x4, COLOR_CONTROL_ENABLED);
+    // TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_MOVE_AXIS, x, 80, 96, 96));
 
     x = 24;
     y = TERN(HAS_UI_480x272, 192, 208);
 
-      // Open SD card menu
-      #if ENABLED(SDSUPPORT)
-        tft.canvas(x, y, 96, 96);
-        tft.set_background(COLOR_BACKGROUND);
-        tft.add_image(0, 0, imgSdv196x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(MENU_MEDIA, x, 208, 96, 96)); 
-        x += 112;
-      #endif
+    // Open SD card menu
+    #if ENABLED(SDSUPPORT)
+      // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+      tft.canvas(x, y, 96, 96);
+      tft.set_background(COLOR_BACKGROUND);
+      tft.add_image(0, 0, imgSdv196x4, COLOR_CONTROL_ENABLED);
+      TERN_(TOUCH_SCREEN, touch.add_control(MENU_MEDIA, x, 208, 96, 96)); 
+      x += 112;
+    #endif
 
       //TODO: leveling options screen & leveling screens
     #if ENABLED(AUTO_BED_LEVELING_UBL)
-        tft.canvas(x, y, 96, 96);
-        tft.set_background(COLOR_BACKGROUND);
-        tft.add_image(0, 0, imgBedleveling96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_UBL, x, 208, 96, 96)); 
-        x += 112;
-      #endif
+      // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+      tft.canvas(x, y, 96, 96);
+      tft.set_background(COLOR_BACKGROUND);
+      tft.add_image(0, 0, imgBedleveling96x4, COLOR_CONTROL_ENABLED);
+      TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_UBL, x, 208, 96, 96)); 
+      x += 112;
+    #endif
 
-      // TODO: LED controls screen
-      #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
-        tft.canvas(x, y, 96, 96);
-        tft.set_background(COLOR_BACKGROUND);
-        tft.add_image(0, 0, imgChamberlight96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_LED, x, 208, 96, 96)); 
-        x += 112;
-      #endif
+    // TODO: LED controls screen
+    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
+      // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+      tft.canvas(x, y, 96, 96);
+      tft.set_background(COLOR_BACKGROUND);
+      tft.add_image(0, 0, imgChamberlight96x4, COLOR_CONTROL_ENABLED);
+      TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_LED, x, 208, 96, 96)); 
+      x += 112;
+    #endif
 
-      // TODO: filament change screen
-      #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
-        tft.canvas(x, y, 96, 96);
-        tft.set_background(COLOR_BACKGROUND);
-        tft.add_image(0, 0, imgSpool96x4, COLOR_CONTROL_ENABLED);
-        TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_FILCHANGE, x, 208, 96, 96)); 
-        x += 112;
-      #endif
+    // TODO: filament change screen
+    #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+      // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+      tft.canvas(x, y, 96, 96);
+      tft.set_background(COLOR_BACKGROUND);
+      tft.add_image(0, 0, imgSpool96x4, COLOR_CONTROL_ENABLED);
+      TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_FILCHANGE, x, 208, 96, 96)); 
+      x += 112;
+    #endif
   }
   // TODO
   // else if (IsRunning) {}
@@ -406,18 +437,6 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
 #endif // AUTO_BED_LEVELING_UBL
 
 // DONE
-static void quick_feedback() {
-  #if HAS_CHIRP
-    ui.chirp(); // Buzz and wait. Is the delay needed for buttons to settle?
-    #if BOTH(HAS_MARLINUI_MENU, HAS_BEEPER)
-      for (int8_t i = 5; i--;) { buzzer.tick(); delay(2); }
-    #elif HAS_MARLINUI_MENU
-      delay(10);
-    #endif
-  #endif
-}
-
-// DONE
 static void drawCurStepValue() {
   tft_string.set(ftostr52sp(motionAxisState.currentStepSize));
   tft_string.add(F("mm"));
@@ -558,36 +577,34 @@ static void y_minus() { moveAxis(Y_AXIS, -1); }
 static void z_plus()  { moveAxis(Z_AXIS, 1);  }
 static void z_minus() { moveAxis(Z_AXIS, -1); }
 
-#if ENABLED(TOUCH_SCREEN)
-  // DONE
-  static void e_select() {
-    motionAxisState.e_selection++;
-    if (motionAxisState.e_selection >= EXTRUDERS) {
-      motionAxisState.e_selection = 0;
-    }
-
-    quick_feedback();
-    drawCurESelection();
-    drawAxisValue(E_AXIS);
+// DONE
+static void e_select() {
+  motionAxisState.e_selection++;
+  if (motionAxisState.e_selection >= EXTRUDERS) {
+    motionAxisState.e_selection = 0;
   }
 
-  // DONE
-  static void do_home() {
-    quick_feedback();
-    drawMessage(GET_TEXT_F(MSG_LEVEL_BED_HOMING));
-    queue.inject_P(G28_STR);
-    // Disable touch until home is done
-    TERN_(HAS_TFT_XPT2046, touch.disable());
-  }
-  
-  // DONE
-  static void step_size() {
-    motionAxisState.currentStepSize = motionAxisState.currentStepSize / 10.0;
-    if (motionAxisState.currentStepSize < 0.0015) motionAxisState.currentStepSize = 10.0;
-    quick_feedback();
-    drawCurStepValue();
-  }
-#endif
+  quick_feedback();
+  drawCurESelection();
+  drawAxisValue(E_AXIS);
+}
+
+// DONE
+static void do_home() {
+  quick_feedback();
+  drawMessage(GET_TEXT_F(MSG_LEVEL_BED_HOMING));
+  queue.inject_P(G28_STR);
+  // Disable touch until home is done
+  TERN_(TOUCH_SCREEN, touch.disable());
+}
+
+// DONE
+static void step_size() {
+  motionAxisState.currentStepSize = motionAxisState.currentStepSize / 10.0;
+  if (motionAxisState.currentStepSize < 0.0015) motionAxisState.currentStepSize = 10.0;
+  quick_feedback();
+  drawCurStepValue();
+}
 
 // DONE
 #if ANY(HAS_BED_PROBE, BABYSTEPPING)
@@ -603,43 +620,12 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
 #endif
 
 // DONE
-static void disable_steppers() {
-  quick_feedback();
-  queue.inject(F("M84"));
-}
-
-// DONE
-static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled = true) {
-  uint16_t width = Images[img].width;
-  uint16_t height = Images[img].height;
-
-  if (!enabled) fgColor = COLOR_CONTROL_DISABLED;
-
-  tft.canvas(x, y, width, height);
-  tft.set_background(bgColor);
-  tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
-
-  if (label) {
-    tft_string.set(label);
-    tft_string.trim();
-    tft.add_text(tft_string.center(width), height / 2 - tft_string.font_height() / 2, fgColor, tft_string);
-  }
-  else {
-    tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
-  }
-
-  TERN_(HAS_TFT_XPT2046, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
-}
-
-// DONE
 void MarlinUI::screen_movement() {
   // Reset
   defer_status_screen(true);
   motionAxisState.blocked = false;
-  TERN_(HAS_TFT_XPT2046, touch.enable());
-
+  TERN_(TOUCH_SCREEN, touch.enable());
   ui.clear_lcd();
-
   TERN_(TOUCH_SCREEN, touch.clear());
 
   // Draw controls layout
@@ -654,26 +640,27 @@ void MarlinUI::screen_movement() {
   drawBtn(x, y, "Y+", (intptr_t)y_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
   drawBtn(x, y, "", (intptr_t)e_minus, imgMoveeup64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-  TERN_(HAS_TFT_XPT2046, add_control(424, y, BACK, imgBackv148x4));
+  drawBtn(424, y, "", (intptr_t)goto_previous_screen, imgBackv148x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
 
   tft.canvas(39, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   x = 56; y += 80;
   drawBtn(x, y, "X-", (intptr_t)x_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-  TERN_(HAS_TFT_XPT2046, add_control(136, y, BUTTON, (intptr_t)do_home, imgHomeall64x4, !busy));
-  x += 160;
+  x += 80;
+  drawBtn(x, y, "", (intptr_t)do_home, imgHomeall64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  x += 80;
   drawBtn(x, y, "X+", (intptr_t)x_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   tft.canvas(295, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   
-  x = 8; y += 80;
+  x = 8, y += 80;
   drawBtn(x, y, "Z-", (intptr_t)z_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET));
   x += 128;
   drawBtn(x, y, "Y-", (intptr_t)y_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
   drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   
-  x = 8; y += 80;
+  x = 8, y += 80;
   #if ANY(HAS_BED_PROBE, BABYSTEPPING)
     motionAxisState.z_selection = busy && ENABLED(BABYSTEPPING) ? Z_SELECTION_Z_PROBE : Z_SELECTION_Z;
     motionAxisState.zTypePos.x = x;
