@@ -29,7 +29,7 @@
 // #include "../../libs/numtostr.h"
 #include "../menu/menu.h"
 
-void menu_pause_option();
+// void menu_pause_option();
 
 static xy_uint_t cursor;
 
@@ -58,26 +58,26 @@ static xy_uint_t cursor;
 
 #endif
 
-void menu_line(const uint8_t row, uint16_t color) {
-  cursor.set(0, row);
-  tft.canvas(0, TFT_TOP_LINE_Y + cursor.y * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT);
-  tft.set_background(color);
-}
+// void menu_line(const uint8_t row, uint16_t color) {
+//   cursor.set(0, row);
+//   tft.canvas(0, TFT_TOP_LINE_Y + cursor.y * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT);
+//   tft.set_background(color);
+// }
 
-void menu_item(const uint8_t row, bool sel ) {
-  #if ENABLED(TOUCH_SCREEN)
-    if (row == 0) {
-      touch.clear();
-      draw_menu_navigation = TERN(ADVANCED_PAUSE_FEATURE, ui.currentScreen != menu_pause_option, true);
-    }
-  #endif
+// void menu_item(const uint8_t row, bool sel ) {
+//   #if ENABLED(TOUCH_SCREEN)
+//     if (row == 0) {
+//       touch.clear();
+//       draw_menu_navigation = TERN(ADVANCED_PAUSE_FEATURE, ui.currentScreen != menu_pause_option, true);
+//     }
+//   #endif
 
-  menu_line(row, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
-  #if ENABLED(TOUCH_SCREEN)
-    const TouchControlType tct = TERN(SINGLE_TOUCH_NAVIGATION, true, sel) ? MENU_CLICK : MENU_ITEM;
-    touch.add_control(tct, 0, TFT_TOP_LINE_Y + row * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT, encoderTopLine + row);
-  #endif
-}
+//   menu_line(row, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
+//   #if ENABLED(TOUCH_SCREEN)
+//     const TouchControlType tct = TERN(SINGLE_TOUCH_NAVIGATION, true, sel) ? MENU_CLICK : MENU_ITEM;
+//     touch.add_control(tct, 0, TFT_TOP_LINE_Y + row * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT, encoderTopLine + row);
+//   #endif
+// }
 
 //
 // lcdprint.h functions
@@ -130,7 +130,7 @@ void lcd_put_int(const int i) {
 
 // Draw a generic menu item with pre_char (if selected) and post_char
 void MenuItemBase::_draw(const bool sel, const uint8_t row, FSTR_P const fstr, const char pre_char, const char post_char) {
-  menu_item(row, sel);
+  tftui.menu_item(row, sel);
 
   const char *string = FTOP(fstr);
   MarlinImage image = noImage;
@@ -153,7 +153,7 @@ void MenuItemBase::_draw(const bool sel, const uint8_t row, FSTR_P const fstr, c
 
 // Draw a menu item with a (potentially) editable value
 void MenuEditItemBase::draw(const bool sel, const uint8_t row, FSTR_P const fstr, const char * const inStr, const bool pgm) {
-  menu_item(row, sel);
+  tftui.menu_item(row, sel);
 
   tft_string.set(fstr, itemIndex, itemStringC, itemStringF);
   tft.add_text(MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
@@ -165,7 +165,7 @@ void MenuEditItemBase::draw(const bool sel, const uint8_t row, FSTR_P const fstr
 
 // Draw a static item with no left-right margin required. Centered by default.
 void MenuItem_static::draw(const uint8_t row, FSTR_P const fstr, const uint8_t style/*=SS_DEFAULT*/, const char * const vstr/*=nullptr*/) {
-  menu_item(row);
+  tftui.menu_item(row);
   tft_string.set(fstr, itemIndex, itemStringC, itemStringF);
   if (vstr) tft_string.add(vstr);
   tft.add_text(tft_string.center(TFT_WIDTH), MENU_TEXT_Y_OFFSET, COLOR_YELLOW, tft_string);
@@ -174,7 +174,7 @@ void MenuItem_static::draw(const uint8_t row, FSTR_P const fstr, const uint8_t s
 #if ENABLED(SDSUPPORT)
 
   void MenuItem_sdbase::draw(const bool sel, const uint8_t row, FSTR_P const, CardReader &theCard, const bool isDir) {
-    menu_item(row, sel);
+    tftui.menu_item(row, sel);
     if (isDir) tft.add_image(MENU_ITEM_ICON_X, MENU_ITEM_ICON_Y, imgMachineprusa48x4, COLOR_MENU_TEXT, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
     constexpr uint8_t maxlen = (MENU_ITEM_HEIGHT) - (MENU_TEXT_Y_OFFSET) + 1;
     tft.add_text(MENU_ITEM_ICON_SPACE, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, ui.scrolled_filename(theCard, maxlen, row, sel));
