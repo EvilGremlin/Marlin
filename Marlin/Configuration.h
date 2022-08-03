@@ -148,13 +148,12 @@
  *
  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
  *
- * Options: A4988, A5984, DRV8825, LV8729, L6470, L6474, POWERSTEP01,
- *          TB6560, TB6600, TMC2100,
+ * Options: A4988, A5984, DRV8825, LV8729, TB6560, TB6600, TMC2100,
  *          TMC2130, TMC2130_STANDALONE, TMC2160, TMC2160_STANDALONE,
  *          TMC2208, TMC2208_STANDALONE, TMC2209, TMC2209_STANDALONE,
  *          TMC26X,  TMC26X_STANDALONE,  TMC2660, TMC2660_STANDALONE,
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
- * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
+ * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
 #define X_DRIVER_TYPE  A4988
 #define Y_DRIVER_TYPE  A4988
@@ -271,6 +270,7 @@
   #define SWITCHING_NOZZLE_SERVO_NR 0
   //#define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
   #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
+  #define SWITCHING_NOZZLE_SERVO_DWELL 2500         // Dwell time to wait for servo to make physical move
 #endif
 
 /**
@@ -654,7 +654,7 @@
  *
  * Use a physical model of the hotend to control temperature. When configured correctly
  * this gives better responsiveness and stability than PID and it also removes the need
- * for PID_EXTRUSION_SCALING and PID_FAN_SCALING. Use M306 to autotune the model.
+ * for PID_EXTRUSION_SCALING and PID_FAN_SCALING. Use M306 T to autotune the model.
  */
 #if ENABLED(MPCTEMP)
   //#define MPC_EDIT_MENU                             // Add MPC editing to the "Advanced Settings" menu. (~1300 bytes of flash)
@@ -2469,6 +2469,16 @@
 //#define REVERSE_SELECT_DIRECTION
 
 //
+// Encoder EMI Noise Filter
+//
+// This option increases encoder samples to filter out phantom encoder clicks caused by EMI noise.
+//
+//#define ENCODER_NOISE_FILTER
+#if ENABLED(ENCODER_NOISE_FILTER)
+  #define ENCODER_SAMPLES 10
+#endif
+
+//
 // Individual Axis Homing
 //
 // Add individual axis homing items (Home X, Home Y, and Home Z) to the LCD menu.
@@ -3087,6 +3097,7 @@
 //
 //#define DWIN_CREALITY_LCD           // Creality UI
 //#define DWIN_LCD_PROUI              // Pro UI by MRiscoC
+//#define DWIN_CREALITY_LCD_JYERSUI   // Jyers UI by Jacob Myers
 //#define DWIN_MARLINUI_PORTRAIT      // MarlinUI (portrait orientation)
 //#define DWIN_MARLINUI_LANDSCAPE     // MarlinUI (landscape orientation)
 
