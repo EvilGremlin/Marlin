@@ -50,9 +50,6 @@
   #include "../../feature/babystep.h"
 #endif
 
-#define Z_SELECTION_Z 1
-#define Z_SELECTION_Z_PROBE -1
-
 #if HAS_UI_480x320 || HAS_UI_480x272
   #include "ui_480x320.h"
 #else

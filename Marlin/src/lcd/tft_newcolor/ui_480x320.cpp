@@ -119,27 +119,27 @@ void MarlinUI::draw_status_screen() {
 
   if (IsStopped) {
     // TODO: will open temperature screen
-    tftui.drawBtn(x, y, "", HEATER, imgThermo96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
-    // tft.canvas(x, y, 96, 96);
-    // tft.set_background(COLOR_BACKGROUND);
-    // tft.add_image(0, 0, , COLOR_CONTROL_ENABLED);
-    // TERN_(TOUCH_SCREEN, touch.add_control(HEATER, x, 80, 96, 96));
+    // tftui.drawBtn(x, y, "", HEATER, imgThermo96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
+    tft.canvas(x, y, 96, 96);
+    tft.set_background(COLOR_BACKGROUND);
+    tft.add_image(0, 0, imgThermo96x4, COLOR_CONTROL_ENABLED);
+    TERN_(TOUCH_SCREEN, touch.add_control(HEATER, x, 80, 96, 96));
     x += 112;
 
     // TODO: will open feed/fan/etc tuning screen
-    tftui.drawBtn(x, y, "", FEEDRATE, imgPrintingtune96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-    // tft.canvas(x, y, 96, 96);
-    // tft.set_background(COLOR_BACKGROUND);
-    // tft.add_image(0, 0, imgPrintingtune96x4, COLOR_CONTROL_ENABLED);
-    // TERN_(TOUCH_SCREEN, touch.add_control(FEEDRATE, x, 80, 96, 96));
+    // tftui.drawBtn(x, y, "", FEEDRATE, imgPrintingtune96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    tft.canvas(x, y, 96, 96);
+    tft.set_background(COLOR_BACKGROUND);
+    tft.add_image(0, 0, imgPrintingtune96x4, COLOR_CONTROL_ENABLED);
+    TERN_(TOUCH_SCREEN, touch.add_control(FEEDRATE, x, 80, 96, 96));
     x += 112;
 
     // REDO: open settings (standard marlin menu)
-    // drawBtn(x, y, "", ui.goto_screen(menu_main), imgCogs296x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-    // tft.canvas(x, y, 96, 96);
-    // tft.set_background(COLOR_BACKGROUND);
-    // tft.add_image(0, 0, imgCogs296x4, COLOR_CONTROL_ENABLED);
-    // TERN_(TOUCH_SCREEN, touch.add_control(MENU_MAIN, x, 80, 96, 96));
+    // tftui.drawBtn(x, y, "", (intptr_t)ui.goto_screen(menu_main), imgCogs296x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    tft.canvas(x, y, 96, 96);
+    tft.set_background(COLOR_BACKGROUND);
+    tft.add_image(0, 0, imgCogs296x4, COLOR_CONTROL_ENABLED);
+    TERN_(TOUCH_SCREEN, touch.add_control(MENU_MAIN, x, 80, 96, 96));
     x += 112;
 
     //DONE Open movement screen

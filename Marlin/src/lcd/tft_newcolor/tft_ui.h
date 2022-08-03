@@ -26,6 +26,9 @@
 #include "../../MarlinCore.h"
 #include "tft.h"
 
+
+#define Z_SELECTION_Z 1
+#define Z_SELECTION_Z_PROBE -1
 class TFTui {
 public:
     static void screen_movement();
