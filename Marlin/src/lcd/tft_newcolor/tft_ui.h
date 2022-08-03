@@ -72,4 +72,4 @@ static MotionAxisState motionAxisState;
 
 static xy_uint_t cursor;
 void menu_pause_option();
-const bool busy = printingIsActive()
+const bool busy = printingIsActive();
