@@ -242,31 +242,6 @@ void Touch::touch(touch_control_t *control) {
       case SCREEN_UBL: hold(control, UBL_REPEAT_DELAY); ui.encoderPosition += control->data; break;
     #endif
 
-    case SCREEN_MOVE_AXIS:
-      ui.goto_screen((screenFunc_t)ui.screen_movement);
-      break;
-
-    case SCREEN_FILCHANGE:
-      // ui.goto_screen((screenFunc_t)ui.screen_filchange);
-      ui.goto_screen(menu_change_filament);
-      break;
-
-    case SCREEN_LED:
-      // ui.goto_screen((screenFunc_t)ui.screen_led);
-      ui.goto_screen(menu_led);
-      break;
-
-    // case SCREEN_FILCHANGE:
-    //   // ui.goto_screen((screenFunc_t)ui.filchange_screen);
-    //   ui.goto_screen(menu_change_filament);
-    //   break;
-
-    // case SCREEN_FILCHANGE:
-    //   // ui.goto_screen((screenFunc_t)ui.filchange_screen);
-    //   ui.goto_screen(menu_change_filament);
-    //   break;
-
-
     // TODO: TOUCH could receive data to pass to the callback
     case BUTTON: ((screenFunc_t)control->data)(); break;
 

@@ -25,27 +25,10 @@
 #if HAS_UI_480x320 || HAS_UI_480x272
 
 #include "ui_common.h"
-
+#include "tft_ui.h"
 #include "../marlinui.h"
+#include "../../MarlinCore.h"
 #include "../menu/menu.h"
-// #include "../../libs/numtostr.h"
-
-// #include "../../sd/cardreader.h"
-// #include "../../module/temperature.h"
-// #include "../../module/printcounter.h"
-// #include "../../module/planner.h"
-// #include "../../module/motion.h"
-
-// #if DISABLED(LCD_PROGRESS_BAR) && BOTH(FILAMENT_LCD_DISPLAY, SDSUPPORT)
-//   #include "../../feature/filwidth.h"
-//   #include "../../gcode/parser.h"
-// #endif
-
-// #if ENABLED(AUTO_BED_LEVELING_UBL)
-//   #include "../../feature/bedlevel/bedlevel.h"
-// #endif
-
-// MotionAxisState motionAxisState;
 
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
@@ -121,29 +104,6 @@ void MarlinUI::draw_kill_screen() {
   tft.queue.sync();
 }
 
-// // DONE
-// static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled = true) {
-//   uint16_t width = Images[img].width;
-//   uint16_t height = Images[img].height;
-
-//   if (!enabled) fgColor = COLOR_CONTROL_DISABLED;
-
-//   tft.canvas(x, y, width, height);
-//   tft.set_background(bgColor);
-//   tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
-
-//   if (label) {
-//     tft_string.set(label);
-//     tft_string.trim();
-//     tft.add_text(tft_string.center(width), height / 2 - tft_string.font_height() / 2, fgColor, tft_string);
-//   }
-//   else {
-//     tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
-//   }
-
-//   TERN_(TOUCH_SCREEN, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
-// }
-
 // INPROGRESS
 void MarlinUI::draw_status_screen() {
   uint16_t x = 24, y = 80;
@@ -183,7 +143,7 @@ void MarlinUI::draw_status_screen() {
     x += 112;
 
     //DONE Open movement screen
-    tftui.drawBtn(x, y, "", (intptr_t)ui.screen_movement, imgMoveall96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    tftui.drawBtn(x, y, "", (intptr_t)tftui.screen_movement, imgMoveall96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
     // tft.canvas(x, y, 96, 96);
     // tft.set_background(COLOR_BACKGROUND);
     // tft.add_image(0, 0, imgMoveall96x4, COLOR_CONTROL_ENABLED);
@@ -215,27 +175,26 @@ void MarlinUI::draw_status_screen() {
     // TODO: LED controls screen
     #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
       // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-      tft.canvas(x, y, 96, 96);
-      tft.set_background(COLOR_BACKGROUND);
-      tft.add_image(0, 0, imgChamberlight96x4, COLOR_CONTROL_ENABLED);
-      TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_LED, x, 208, 96, 96)); 
+      // tft.canvas(x, y, 96, 96);
+      // tft.set_background(COLOR_BACKGROUND);
+      // tft.add_image(0, 0, imgChamberlight96x4, COLOR_CONTROL_ENABLED);
+      // TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_LED, x, 208, 96, 96)); 
       x += 112;
     #endif
 
     // TODO: filament change screen
     #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
       // drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-      tft.canvas(x, y, 96, 96);
-      tft.set_background(COLOR_BACKGROUND);
-      tft.add_image(0, 0, imgSpool96x4, COLOR_CONTROL_ENABLED);
-      TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_FILCHANGE, x, 208, 96, 96)); 
+      // tft.canvas(x, y, 96, 96);
+      // tft.set_background(COLOR_BACKGROUND);
+      // tft.add_image(0, 0, imgSpool96x4, COLOR_CONTROL_ENABLED);
+      // TERN_(TOUCH_SCREEN, touch.add_control(SCREEN_FILCHANGE, x, 208, 96, 96)); 
       x += 112;
     #endif
   }
   // TODO
   // else if (IsRunning) {}
 }
-
 
 // TODO
 // Low-level draw_edit_screen can be used to draw an edit screen from anyplace
@@ -338,30 +297,6 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
   #endif
 }
 
-// // TODO merge with filchange screen
-// #if ENABLED(ADVANCED_PAUSE_FEATURE)
-//   void MarlinUI::draw_hotend_status(const uint8_t row, const uint8_t extruder) {
-//     #if ENABLED(TOUCH_SCREEN)
-//       touch.clear();
-//       draw_menu_navigation = false;
-//       touch.add_control(RESUME_CONTINUE , 0, 0, TFT_WIDTH, TFT_HEIGHT);
-//     #endif
-
-//     tftui.menu_line(row);
-//     tft_string.set(GET_TEXT(MSG_FILAMENT_CHANGE_NOZZLE));
-//     tft_string.add('E');
-//     tft_string.add((char)('1' + extruder));
-//     tft_string.add(' ');
-//     tft_string.add(i16tostr3rj(thermalManager.wholeDegHotend(extruder)));
-//     tft_string.add(LCD_STR_DEGREE);
-//     tft_string.add(F(" / "));
-//     tft_string.add(i16tostr3rj(thermalManager.degTargetHotend(extruder))); 
-//     tft_string.add(LCD_STR_DEGREE);
-//     tft_string.trim();
-//     tft.add_text(tft_string.center(TFT_WIDTH), 0, COLOR_MENU_TEXT, tft_string);
-//   }
-// #endif // ADVANCED_PAUSE_FEATURE
-
 // TODO
 #if ENABLED(AUTO_BED_LEVELING_UBL)
   #define GRID_OFFSET_X   8
@@ -437,193 +372,10 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
 #endif // AUTO_BED_LEVELING_UBL
 
 // DONE
-static void drawCurStepValue() {
-  tft_string.set(ftostr52sp(tftui.motionAxisState.currentStepSize));
-  tft_string.add(F("mm"));
-  tft.canvas(tftui.motionAxisState.stepValuePos.x, tftui.motionAxisState.stepValuePos.y, 104, 32);
-  tft.set_background(COLOR_BACKGROUND);
-  tft.add_text(tft_string.center(CUR_STEP_VALUE_WIDTH), 0, COLOR_AXIS_HOMED, tft_string);
-}
-
-// DONE
-static void drawCurESelection() {
-  tft_string.set("*", tftui.motionAxisState.e_selection);
-  tft.canvas(tftui.motionAxisState.eNamePos.x, tftui.motionAxisState.eNamePos.y, 32, 32);
-  tft.set_background(COLOR_BACKGROUND);
-  tft.add_text(0, 0, COLOR_CONTROL_ENABLED , tft_string);
-  tft.queue.sync();
-}
-
-// // TODO: make it messagebox with timeout and close button ?
-// static void drawMessage(PGM_P const msg) {
-//   tft.canvas(64, 64, 416, TFT_HEIGHT - 128);
-//   tft.set_background(COLOR_BACKGROUND);
-//   tft.add_text(tft_string.center(240), (TFT_HEIGHT-128)/2-FONT_LINE_HEIGHT/2, COLOR_MENU_TEXT, msg);
-// }
-
-// static void drawMessage(FSTR_P const fmsg) { drawMessage(FTOP(fmsg)); }
-
-// // DONE
-// static void drawAxisValue(const AxisEnum axis) {
-//   const float value = (
-//     TERN_(HAS_BED_PROBE, axis == Z_AXIS && tftui.motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? probe.offset.z :)
-//     ui.manual_move.axis_value(axis)
-//   );
-//   xy_int_t pos;
-//   bool not_homed = axis_should_home(axis);
-//   switch (axis) {
-//     case X_AXIS: pos = tftui.motionAxisState.xValuePos; break;
-//     case Y_AXIS: pos = tftui.motionAxisState.yValuePos; break;
-//     case Z_AXIS: pos = tftui.motionAxisState.zValuePos; break;
-//     case E_AXIS: pos = tftui.motionAxisState.eValuePos; break;
-//     default: return;
-//   }
-//   tft.canvas(pos.x, pos.y, 80, FONT_LINE_HEIGHT);
-//   tft.set_background(COLOR_BACKGROUND);
-//   tft_string.set(blink && not_homed ? "?" : ftostr52sign(value));
-//   tft.add_text(0, 0, not_homed ? COLOR_AXIS_NOT_HOMED : COLOR_AXIS_HOMED, tft_string);
-// }
-
-// TODO: messages
-static void moveAxis(const AxisEnum axis, const int8_t direction) {
-  tftui.quick_feedback();
-
-  #if ENABLED(PREVENT_COLD_EXTRUSION)
-    if (axis == E_AXIS && thermalManager.tooColdToExtrude(tftui.motionAxisState.e_selection)) {
-      drawMessage(F("Too cold"));
-      return;
-    }
-  #endif
-
-  const float diff = tftui.motionAxisState.currentStepSize * direction;
-
-  if (axis == Z_AXIS && tftui.motionAxisState.z_selection == Z_SELECTION_Z_PROBE) {
-    #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
-      const int16_t babystep_increment = direction * BABYSTEP_SIZE_Z;
-      const bool do_probe = DISABLED(BABYSTEP_HOTEND_Z_OFFSET) || active_extruder == 0;
-      const float bsDiff = planner.mm_per_step[Z_AXIS] * babystep_increment,
-                  new_probe_offset = probe.offset.z + bsDiff,
-                  new_offs = TERN(BABYSTEP_HOTEND_Z_OFFSET
-                    , do_probe ? new_probe_offset : hotend_offset[active_extruder].z - bsDiff
-                    , new_probe_offset
-                  );
-      if (WITHIN(new_offs, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX)) {
-        babystep.add_steps(Z_AXIS, babystep_increment);
-        if (do_probe)
-          probe.offset.z = new_offs;
-        else
-          TERN(BABYSTEP_HOTEND_Z_OFFSET, hotend_offset[active_extruder].z = new_offs, NOOP);
-        drawMessage(NUL_STR); // clear the error
-        drawAxisValue(axis);
-      }
-      else {
-        drawMessage(GET_TEXT_F(MSG_LCD_SOFT_ENDSTOPS));
-      }
-    #elif HAS_BED_PROBE
-      // only change probe.offset.z
-      probe.offset.z += diff;
-      if (direction < 0 && current_position[axis] < Z_PROBE_OFFSET_RANGE_MIN) {
-        current_position[axis] = Z_PROBE_OFFSET_RANGE_MIN;
-        drawMessage(GET_TEXT_F(MSG_LCD_SOFT_ENDSTOPS));
-      }
-      else if (direction > 0 && current_position[axis] > Z_PROBE_OFFSET_RANGE_MAX) {
-        current_position[axis] = Z_PROBE_OFFSET_RANGE_MAX;
-        drawMessage(GET_TEXT_F(MSG_LCD_SOFT_ENDSTOPS));
-      }
-      else {
-        drawMessage(NUL_STR); // clear the error
-      }
-      drawAxisValue(axis);
-    #endif
-    return;
-  }
-
-  if (!ui.manual_move.processing) {
-    // Get motion limit from software endstops, if any
-    float min, max;
-    soft_endstop.get_manual_axis_limits(axis, min, max);
-
-    // Delta limits XY based on the current offset from center
-    // This assumes the center is 0,0
-    #if ENABLED(DELTA)
-      if (axis != Z_AXIS && axis != E_AXIS) {
-        max = SQRT(sq((float)(DELTA_PRINTABLE_RADIUS)) - sq(current_position[Y_AXIS - axis])); // (Y_AXIS - axis) == the other axis
-        min = -max;
-      }
-    #endif
-
-    // Get the new position
-    const bool limited = ui.manual_move.apply_diff(axis, diff, min, max);
-    #if IS_KINEMATIC
-      UNUSED(limited);
-    #else
-      PGM_P const msg = limited ? GET_TEXT(MSG_LCD_SOFT_ENDSTOPS) : NUL_STR;
-      drawMessage(msg);
-    #endif
-
-    ui.manual_move.soon(axis OPTARG(MULTI_E_MANUAL, tftui.motionAxisState.e_selection));
-  }
-
-  drawAxisValue(axis);
-}
-
-// DONE
-static void e_plus()  { moveAxis(E_AXIS, 1);  }
-static void e_minus() { moveAxis(E_AXIS, -1); }
-static void x_minus() { moveAxis(X_AXIS, -1); }
-static void x_plus()  { moveAxis(X_AXIS, 1);  }
-static void y_plus()  { moveAxis(Y_AXIS, 1);  }
-static void y_minus() { moveAxis(Y_AXIS, -1); }
-static void z_plus()  { moveAxis(Z_AXIS, 1);  }
-static void z_minus() { moveAxis(Z_AXIS, -1); }
-
-// DONE
-static void e_select() {
-  tftui.motionAxisState.e_selection++;
-  if (tftui.motionAxisState.e_selection >= EXTRUDERS) {
-    tftui.motionAxisState.e_selection = 0;
-  }
-
-  tftui.quick_feedback();
-  drawCurESelection();
-  drawAxisValue(E_AXIS);
-}
-
-// DONE
-static void do_home() {
-  tftui.quick_feedback();
-  tftui.drawMessage(GET_TEXT_F(MSG_LEVEL_BED_HOMING));
-  queue.inject_P(G28_STR);
-  // Disable touch until home is done
-  TERN_(TOUCH_SCREEN, touch.disable());
-}
-
-// DONE
-static void step_size() {
-  tftui.motionAxisState.currentStepSize = tftui.motionAxisState.currentStepSize / 10.0;
-  if (tftui.motionAxisState.currentStepSize < 0.0015) tftui.motionAxisState.currentStepSize = 10.0;
-  tftui.quick_feedback();
-  drawCurStepValue();
-}
-
-// DONE
-#if ANY(HAS_BED_PROBE, BABYSTEPPING)
-  static void z_select() {
-    tftui.motionAxisState.z_selection *= -1;
-    tftui.quick_feedback();
-    MarlinImage img = tftui.motionAxisState.z_selection == Z_SELECTION_Z_PROBE ? imgBedzoffset64x64x4 : imgMovez64x64x4;
-    tft.canvas(tftui.motionAxisState.zTypePos.x, tftui.motionAxisState.zTypePos.y, 64, 64);
-    tft.add_image(0, 0, img, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, COLOR_BLACK);
-    drawAxisValue(Z_AXIS);
-    tft.queue.sync();
-  }
-#endif
-
-// DONE
-void MarlinUI::screen_movement() {
+void TFTui::screen_movement() {
   // Reset
   ui.defer_status_screen(true);
-  tftui.motionAxisState.blocked = false;
+  motionAxisState.blocked = false;
   TERN_(TOUCH_SCREEN, touch.enable());
   ui.clear_lcd();
   TERN_(TOUCH_SCREEN, touch.clear());
@@ -635,43 +387,43 @@ void MarlinUI::screen_movement() {
   // ROW 4: Z#   Step   E#   Moff
 
   int x = 8, y = 8;
-  tftui.drawBtn(x, y, "Z+", (intptr_t)z_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET)); //only enabled when not busy or have baby step
+  tftui.drawBtn(x, y, "Z+", (intptr_t)tftui.z_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET)); //only enabled when not busy or have baby step
   x += 128;
-  tftui.drawBtn(x, y, "Y+", (intptr_t)y_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "Y+", (intptr_t)tftui.y_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
-  tftui.drawBtn(x, y, "", (intptr_t)e_minus, imgMoveeup64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_minus, imgMoveeup64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   tftui.drawBtn(424, y, "", (intptr_t)ui.goto_previous_screen, imgBackv148x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
 
   tft.canvas(39, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   x = 56; y += 80;
-  tftui.drawBtn(x, y, "X-", (intptr_t)x_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "X-", (intptr_t)tftui.x_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 80;
   tftui.drawBtn(x, y, "", (intptr_t)do_home, imgHomeall64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 80;
-  tftui.drawBtn(x, y, "X+", (intptr_t)x_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "X+", (intptr_t)tftui.x_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   tft.canvas(295, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   
   x = 8, y += 80;
-  tftui.drawBtn(x, y, "Z-", (intptr_t)z_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET));
+  tftui.drawBtn(x, y, "Z-", (intptr_t)tftui.z_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET));
   x += 128;
-  tftui.drawBtn(x, y, "Y-", (intptr_t)y_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "Y-", (intptr_t)tftui.y_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
-  tftui.drawBtn(x, y, "", (intptr_t)e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   
   x = 8, y += 80;
   #if ANY(HAS_BED_PROBE, BABYSTEPPING)
-    tftui.motionAxisState.z_selection = busy && ENABLED(BABYSTEPPING) ? Z_SELECTION_Z_PROBE : Z_SELECTION_Z;
-    tftui.motionAxisState.zTypePos.x = x;
-    tftui.motionAxisState.zTypePos.y = y;
+    motionAxisState.z_selection = busy && ENABLED(BABYSTEPPING) ? Z_SELECTION_Z_PROBE : Z_SELECTION_Z;
+    motionAxisState.zTypePos.x = x;
+    motionAxisState.zTypePos.y = y;
     touch.add_control(BUTTON, x, y, 64, 64, (intptr_t)z_select);
     z_select();
   #endif
   
   x += 96;
-  tftui.motionAxisState.stepValuePos.x = x+10;
-  tftui.motionAxisState.stepValuePos.y = y+16;
+  motionAxisState.stepValuePos.x = x+10;
+  motionAxisState.stepValuePos.y = y+16;
   if (!busy) {
     tftui.drawBtn(x, y, "", (intptr_t)step_size, imgPrism128x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
     drawCurStepValue(); 
@@ -679,8 +431,8 @@ void MarlinUI::screen_movement() {
   
   x += 160;
   #if EXTRUDERS > 1
-    tftui.motionAxisState.eNamePos.x = x+8;
-    tftui.motionAxisState.eNamePos.y = y+8;
+    motionAxisState.eNamePos.x = x+8;
+    motionAxisState.eNamePos.y = y+8;
     if (!busy) {
       tftui.drawBtn(x, y, "", (intptr_t)e_select, imgHotend64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
       drawCurESelection(); 
@@ -699,25 +451,25 @@ void MarlinUI::screen_movement() {
   tft.add_text(0, FONT_LINE_HEIGHT * 2, COLOR_AXIS_HOMED, "Z: ");
   tft.add_text(0, FONT_LINE_HEIGHT * 3, COLOR_AXIS_HOMED, "E: ");
 
-  x += 32;
-  tftui.motionAxisState.xValuePos.x = x;
-  tftui.motionAxisState.xValuePos.y = y;
-  drawAxisValue(X_AXIS);
+  x += 32; 
+  motionAxisState.xValuePos.x = x;
+  motionAxisState.xValuePos.y = y;
+  tftui.drawAxisValue(X_AXIS);
   
   y += FONT_LINE_HEIGHT;
-  tftui.motionAxisState.yValuePos.x = x;
-  tftui.motionAxisState.yValuePos.y = y;
-  drawAxisValue(Y_AXIS);
+  motionAxisState.yValuePos.x = x;
+  motionAxisState.yValuePos.y = y;
+  tftui.drawAxisValue(Y_AXIS);
 
   y += FONT_LINE_HEIGHT;
-  tftui.motionAxisState.zValuePos.x = x;
-  tftui.motionAxisState.zValuePos.y = y;
-  drawAxisValue(Z_AXIS);
+  motionAxisState.zValuePos.x = x;
+  motionAxisState.zValuePos.y = y;
+  tftui.drawAxisValue(Z_AXIS);
   
   y += FONT_LINE_HEIGHT;
-  tftui.motionAxisState.eValuePos.x = x;
-  tftui.motionAxisState.eValuePos.y = y;
-  drawAxisValue(E_AXIS);
+  motionAxisState.eValuePos.x = x;
+  motionAxisState.eValuePos.y = y;
+  tftui.drawAxisValue(E_AXIS);
 }
 
 #endif // HAS_UI_480x320

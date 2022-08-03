@@ -19,19 +19,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
 #include "../../inc/MarlinConfigPre.h"
 
-#if HAS_GRAPHICAL_TFT
-
 #include "ui_common.h"
+#include "tft_ui.h"
+#include "../../libs/numtostr.h"
 #include "../lcdprint.h"
-// #include "../../libs/numtostr.h"
 #include "../menu/menu.h"
-
-// void menu_pause_option();
-
-static xy_uint_t cursor;
 
 #if ENABLED(TOUCH_SCREEN)
   bool draw_menu_navigation = false;
@@ -57,27 +51,6 @@ static xy_uint_t cursor;
   }
 
 #endif
-
-// void menu_line(const uint8_t row, uint16_t color) {
-//   cursor.set(0, row);
-//   tft.canvas(0, TFT_TOP_LINE_Y + cursor.y * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT);
-//   tft.set_background(color);
-// }
-
-// void menu_item(const uint8_t row, bool sel ) {
-//   #if ENABLED(TOUCH_SCREEN)
-//     if (row == 0) {
-//       touch.clear();
-//       draw_menu_navigation = TERN(ADVANCED_PAUSE_FEATURE, ui.currentScreen != menu_pause_option, true);
-//     }
-//   #endif
-
-//   menu_line(row, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
-//   #if ENABLED(TOUCH_SCREEN)
-//     const TouchControlType tct = TERN(SINGLE_TOUCH_NAVIGATION, true, sel) ? MENU_CLICK : MENU_ITEM;
-//     touch.add_control(tct, 0, TFT_TOP_LINE_Y + row * MENU_LINE_HEIGHT, TFT_WIDTH - 64, MENU_ITEM_HEIGHT, encoderTopLine + row);
-//   #endif
-// }
 
 //
 // lcdprint.h functions
@@ -123,7 +96,7 @@ void lcd_put_int(const int i) {
   const char* str = i16tostr3left(int16_t(i));
   lcd_put_u8str_max(str, 3);
 }
-
+ 
 //
 // Menu Item methods
 //
@@ -273,5 +246,3 @@ void MarlinUI::clear_lcd() {
   }
 
 #endif // TOUCH_SCREEN_CALIBRATION
-
-#endif // HAS_GRAPHICAL_TFT
