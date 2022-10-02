@@ -65,6 +65,7 @@ enum TouchControlType : uint16_t {
   PAGE_DOWN,
   PAGE_UP,
   RESUME_CONTINUE,
+  SCREEN,
   SCREEN_UBL,
   SLIDER,
 };

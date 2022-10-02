@@ -31,9 +31,9 @@
 #define Z_SELECTION_Z_PROBE -1
 class TFTui {
 public:
-    static void screen_movement();
+    // static void screen_movement();
 
-    static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled);
+    static void drawBtn(int x, int y, const char *label, intptr_t data, bool is_screen, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled);
     static void drawMessage(PGM_P const msg);
     static void drawMessage(FSTR_P const fmsg) { drawMessage(FTOP(fmsg)); }
 
@@ -42,13 +42,13 @@ public:
     static void drawCurESelection();
 
     static void moveAxis(const AxisEnum axis, const int8_t direction);
-    static void e_plus()  { moveAxis(E_AXIS, 1);  }
+    static void e_plus()  { moveAxis(E_AXIS,  1); }
     static void e_minus() { moveAxis(E_AXIS, -1); }
     static void x_minus() { moveAxis(X_AXIS, -1); }
-    static void x_plus()  { moveAxis(X_AXIS, 1);  }
-    static void y_plus()  { moveAxis(Y_AXIS, 1);  }
+    static void x_plus()  { moveAxis(X_AXIS,  1); }
+    static void y_plus()  { moveAxis(Y_AXIS,  1); }
     static void y_minus() { moveAxis(Y_AXIS, -1); }
-    static void z_plus()  { moveAxis(Z_AXIS, 1);  }
+    static void z_plus()  { moveAxis(Z_AXIS,  1); }
     static void z_minus() { moveAxis(Z_AXIS, -1); }
     static void e_select();
     static void z_select();

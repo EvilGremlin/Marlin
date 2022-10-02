@@ -48,7 +48,7 @@ void TFTui::disable_steppers() {
   queue.inject(F("M84"));
 }
 
-void TFTui::drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled) {
+void TFTui::drawBtn(int x, int y, const char *label, intptr_t data, bool is_screen, MarlinImage img, uint16_t fgColor, uint16_t bgColor, bool enabled) {
   uint16_t width = Images[img].width;
   uint16_t height = Images[img].height;
 
@@ -67,7 +67,9 @@ void TFTui::drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage 
     tft.add_image(0, 0, img, fgColor, bgColor, COLOR_BLACK);
   }
 
-  TERN_(TOUCH_SCREEN, if (enabled) touch.add_control(BUTTON, x, y, width, height, data));
+  TERN_(TOUCH_SCREEN, if (enabled && !is_screen) touch.add_control(BUTTON, x, y, width, height, data));
+  TERN_(TOUCH_SCREEN, if (enabled && is_screen)  touch.add_control(SCREEN, x, y, width, height, data));
+
 }
 
 // TODO: add font n stuff

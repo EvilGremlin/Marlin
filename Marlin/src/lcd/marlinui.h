@@ -470,6 +470,11 @@ public:
       #endif
 
       static void status_screen();
+      #if HAS_GRAPHICAL_TFT
+        static void screen_movement();
+        // static void drawMessage(PGM_P const msg);
+        // static void drawMessage(FSTR_P const fmsg);
+      #endif
 
     #endif
 
@@ -752,11 +757,6 @@ public:
     static void touch_calibration_screen();
   #endif
 
-  // #if HAS_GRAPHICAL_TFT
-  //   static void screen_movement();
-  //   static void drawMessage(PGM_P const msg);
-  //   static void drawMessage(FSTR_P const fmsg);
-  // #endif
 
 private:
 

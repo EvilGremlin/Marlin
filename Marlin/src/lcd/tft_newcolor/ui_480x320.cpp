@@ -107,8 +107,10 @@ void MarlinUI::draw_kill_screen() {
 // INPROGRESS
 void MarlinUI::draw_status_screen() {
   uint16_t x = 24, y = 80;
-
+  
+  TERN_(TOUCH_SCREEN, touch.enable());
   TERN_(TOUCH_SCREEN, touch.clear());
+  ui.clear_lcd();
 
   // status message
   tft.canvas(8, 16, TFT_WIDTH - 16, 32);
@@ -143,7 +145,7 @@ void MarlinUI::draw_status_screen() {
     x += 112;
 
     //DONE Open movement screen
-    tftui.drawBtn(x, y, "", (intptr_t)tftui.screen_movement, imgMoveall96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    tftui.drawBtn(x, y, "", (intptr_t)ui.screen_movement, true, imgMoveall96x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
     // tft.canvas(x, y, 96, 96);
     // tft.set_background(COLOR_BACKGROUND);
     // tft.add_image(0, 0, imgMoveall96x4, COLOR_CONTROL_ENABLED);
@@ -372,13 +374,13 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
 #endif // AUTO_BED_LEVELING_UBL
 
 // DONE
-void TFTui::screen_movement() {
+void MarlinUI::screen_movement() {
   // Reset
-  ui.defer_status_screen(true);
+  ui.defer_status_screen(false);
   motionAxisState.blocked = false;
   TERN_(TOUCH_SCREEN, touch.enable());
-  ui.clear_lcd();
   TERN_(TOUCH_SCREEN, touch.clear());
+  ui.clear_lcd();
 
   // Draw controls layout
   // ROW 1: Z+    Y+    E+   Back
@@ -387,46 +389,46 @@ void TFTui::screen_movement() {
   // ROW 4: Z#   Step   E#   Moff
 
   int x = 8, y = 8;
-  tftui.drawBtn(x, y, "Z+", (intptr_t)tftui.z_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET)); //only enabled when not busy or have baby step
+  tftui.drawBtn(x, y, "Z+", (intptr_t)tftui.z_plus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET)); //only enabled when not busy or have baby step
   x += 128;
-  tftui.drawBtn(x, y, "Y+", (intptr_t)tftui.y_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "Y+", (intptr_t)tftui.y_plus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
-  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_minus, imgMoveeup64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-  tftui.drawBtn(424, y, "", (intptr_t)ui.goto_previous_screen, imgBackv148x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_minus, false, imgMoveeup64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(424, y, "", (intptr_t)ui.goto_previous_screen, false, imgBackv148x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, true);
 
   tft.canvas(39, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   x = 56; y += 80;
-  tftui.drawBtn(x, y, "X-", (intptr_t)tftui.x_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "X-", (intptr_t)tftui.x_minus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 80;
-  tftui.drawBtn(x, y, "", (intptr_t)do_home, imgHomeall64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.do_home, false, imgHomeall64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 80;
-  tftui.drawBtn(x, y, "X+", (intptr_t)tftui.x_plus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "X+", (intptr_t)tftui.x_plus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   tft.canvas(295, 80, 2, 80);
   tft.set_background(COLOR_WHITE);
   
   x = 8, y += 80;
-  tftui.drawBtn(x, y, "Z-", (intptr_t)tftui.z_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET));
+  tftui.drawBtn(x, y, "Z-", (intptr_t)tftui.z_minus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy || ENABLED(BABYSTEP_ZPROBE_OFFSET));
   x += 128;
-  tftui.drawBtn(x, y, "Y-", (intptr_t)tftui.y_minus, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "Y-", (intptr_t)tftui.y_minus, false, imgPrism64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   x += 128;
-  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_plus, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.e_plus, false, imgMoveedown64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
   
   x = 8, y += 80;
   #if ANY(HAS_BED_PROBE, BABYSTEPPING)
     motionAxisState.z_selection = busy && ENABLED(BABYSTEPPING) ? Z_SELECTION_Z_PROBE : Z_SELECTION_Z;
     motionAxisState.zTypePos.x = x;
     motionAxisState.zTypePos.y = y;
-    touch.add_control(BUTTON, x, y, 64, 64, (intptr_t)z_select);
-    z_select();
+    touch.add_control(BUTTON, x, y, 64, 64, (intptr_t)tftui.z_select);
+    tftui.z_select();
   #endif
   
   x += 96;
   motionAxisState.stepValuePos.x = x+10;
   motionAxisState.stepValuePos.y = y+16;
   if (!busy) {
-    tftui.drawBtn(x, y, "", (intptr_t)step_size, imgPrism128x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-    drawCurStepValue(); 
+    tftui.drawBtn(x, y, "", (intptr_t)tftui.step_size, false, imgPrism128x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+    tftui.drawCurStepValue(); 
     }
   
   x += 160;
@@ -434,13 +436,13 @@ void TFTui::screen_movement() {
     motionAxisState.eNamePos.x = x+8;
     motionAxisState.eNamePos.y = y+8;
     if (!busy) {
-      tftui.drawBtn(x, y, "", (intptr_t)e_select, imgHotend64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
-      drawCurESelection(); 
+      tftui.drawBtn(x, y, "", (intptr_t)tftui.e_select, false, imgHotend64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+      tftui.drawCurESelection(); 
       }
   #endif
   
   x += 136;
-  tftui.drawBtn(x, y, "", (intptr_t)tftui.disable_steppers, imgStepperoff64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
+  tftui.drawBtn(x, y, "", (intptr_t)tftui.disable_steppers, false, imgStepperoff64x64x4, COLOR_CONTROL_ENABLED, COLOR_BACKGROUND, !busy);
 
   // Draw axes values display
   x = 344; y = 88;
