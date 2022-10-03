@@ -743,6 +743,11 @@
   #ifndef SHUTDOWN_ACTION
     #define SHUTDOWN_ACTION   "shutdown"
   #endif
+  #ifndef SELECT_FILE_ACTION
+    #define SELECT_FILE_ACTION "select_file"
+    #define REQUEST_LIST_ACTION "request_list"
+  #endif
+
   #if HAS_FILAMENT_SENSOR
     #ifndef ACTION_ON_FILAMENT_RUNOUT
       #define ACTION_ON_FILAMENT_RUNOUT "filament_runout"

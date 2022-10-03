@@ -66,6 +66,10 @@ class HostUI {
   #ifdef SHUTDOWN_ACTION
     static void shutdown();
   #endif
+  #ifdef SELECT_FILE_ACTION
+    static void select_file(uint8_t id);
+    static void request_filelist(uint8_t length, uint8_t page);
+  #endif
 
   #if ENABLED(G29_RETRY_AND_RECOVER)
     #ifdef ACTION_ON_G29_RECOVER

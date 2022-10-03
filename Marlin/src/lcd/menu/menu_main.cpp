@@ -72,6 +72,10 @@ void menu_motion();
 void menu_temperature();
 void menu_configuration();
 
+#if ENABLED(HOST_FILE_SELECT)
+  void menu_host_files();
+#endif
+
 #if HAS_POWER_MONITOR
   void menu_power_monitor();
 #endif
@@ -318,6 +322,10 @@ void menu_main() {
 
     #if ENABLED(HOST_START_MENU_ITEM) && defined(ACTION_ON_START)
       ACTION_ITEM(MSG_HOST_START_PRINT, hostui.start);
+    #endif
+
+    #if ENABLED(HOST_FILE_SELECT)
+      SUBMENU(MSG_HOST_FILES, menu_host_files);
     #endif
 
     #if ENABLED(PREHEAT_SHORTCUT_MENU_ITEM)

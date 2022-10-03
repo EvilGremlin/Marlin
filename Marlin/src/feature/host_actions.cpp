@@ -81,6 +81,19 @@ void HostUI::action(FSTR_P const fstr, const bool eol) {
   void HostUI::shutdown() { action(F(SHUTDOWN_ACTION)); }
 #endif
 
+#ifdef SELECT_FILE_ACTION
+  void HostUI::select_file(uint8_t id) {
+    action(F(SELECT_FILE_ACTION), false);
+    SERIAL_ECHO_MSG(" ", id);
+  }
+
+  void HostUI::request_filelist(uint8_t length, uint8_t page){
+    action(F(REQUEST_LIST_ACTION), false);
+    SERIAL_ECHO_MSG(" L", length, " P", page);    // length is screen rows height, page is to be synced with host
+  }
+#endif
+
+
 #if ENABLED(HOST_PROMPT_SUPPORT)
 
   PromptReason HostUI::host_prompt_reason = PROMPT_NOT_DEFINED;

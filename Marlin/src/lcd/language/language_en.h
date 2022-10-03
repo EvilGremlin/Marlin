@@ -492,6 +492,7 @@ namespace Language_en {
     LSTR MSG_TURN_OFF                     = _UxGT("Turn off now");
     LSTR MSG_END_LOOPS                    = _UxGT("End Loops");
   #endif
+  LSTR MSG_HOST_FILES                     = _UxGT("Host files");
   LSTR MSG_NO_MEDIA                       = _UxGT("No ") MEDIA_TYPE_EN;
   LSTR MSG_DWELL                          = _UxGT("Sleep...");
   LSTR MSG_USERWAIT                       = _UxGT("Click to Resume...");
