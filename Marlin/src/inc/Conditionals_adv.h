@@ -743,9 +743,8 @@
   #ifndef SHUTDOWN_ACTION
     #define SHUTDOWN_ACTION   "shutdown"
   #endif
-  #ifndef SELECT_FILE_ACTION
-    #define SELECT_FILE_ACTION "select_file"
-    #define REQUEST_LIST_ACTION "request_list"
+  #ifndef HOST_FILE_ACTION
+    #define HOST_FILE_ACTION "host_file "  // space must be kept!
   #endif
 
   #if HAS_FILAMENT_SENSOR

@@ -66,9 +66,21 @@ class HostUI {
   #ifdef SHUTDOWN_ACTION
     static void shutdown();
   #endif
-  #ifdef SELECT_FILE_ACTION
-    static void select_file(uint8_t id);
-    static void request_filelist(uint8_t length, uint8_t page);
+  #ifdef HOST_FILE_ACTION
+    /*
+    * For memory efficiency sake, we use uint8_t indexes for everything:
+    *   0...63  are LCD_HEIGH (entries in page), this also serve as first (top) page request
+    * 64...127  are directory indexes
+    * 128...255 are file indexes
+    * '+' and '-' are PageUp and PageDown
+    * 
+    * TODO: check/revise ranges to reieably use shift division in comparisons, we need every cycle on AVR!!!
+    */
+    static void host_file(const char* data);
+    static void request_pginit()              {host_file(STRINGIFY(LCD_HEIGHT));};
+    static void request_pgup()                {host_file("+");};
+    static void request_pgdn()                {host_file("-");};
+    static void select_file(const char* id) {host_file(id);};
   #endif
 
   #if ENABLED(G29_RETRY_AND_RECOVER)

@@ -849,6 +849,11 @@ namespace Language_en {
   LSTR MSG_PID_F                          = _UxGT("PID-F");
   LSTR MSG_PID_F_E                        = _UxGT("PID-F *");
   LSTR MSG_BACKLASH_N                     = _UxGT("@");
+
+  LSTR MINIT = _UxGT("get init page");
+  LSTR MUP = _UxGT("page up");
+  LSTR MDN = _UxGT("page down");
+  LSTR MSF = _UxGT("select file");
 }
 
 #if FAN_COUNT == 1

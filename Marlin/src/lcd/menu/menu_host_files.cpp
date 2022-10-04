@@ -29,9 +29,22 @@
 #if BOTH(HAS_MARLINUI_MENU, HOST_FILE_SELECT)
 
 #include "menu_item.h"
+#include "../../feature/host_actions.h"
 
 void menu_host_files(){
-  
+
+  static uint8_t id = 25;
+
+  START_MENU();
+  BACK_ITEM(MSG_MAIN);
+  // ACTION_ITEM(MINIT,  hostui.request_pginit);
+  ACTION_ITEM(MINIT,  hostui.request_pginit);
+  ACTION_ITEM(MUP,    hostui.request_pgup);
+  ACTION_ITEM(MDN,    hostui.request_pgdn);
+  ACTION_ITEM(MSF,    []{hostui.select_file(ui8tostr3rj(id));});
+
+
+  END_MENU();
 }
 
 #endif // HAS_MARLINUI_MENU && HOST_FILE_SELECT
