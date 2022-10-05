@@ -3938,7 +3938,7 @@
     #define HOST_STATUS_NOTIFICATIONS   // Send some status messages to the host as notifications
   #endif
   #define HOST_FILE_SELECT              // Browse and select host files to print
-  #define HOST_FILE_AUTOSTART           // Start printing on file selection, else use HOST_START_MENU_ITEM
+  #define HOST_FILE_CONFIRM_START       // Confirm selected file before printing
   #define HOST_ABORT_NO_COOLDOWN        // Do not turn heaters off oh host print abort (host also must be setup to not turn them off)
   #define HOST_START_MENU_ITEM          // Add a menu item that tells the host to start print of currenty selected file
   // #define HOST_SHUTDOWN_MENU_ITEM       // Add a menu item that tells the host to shut down

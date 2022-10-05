@@ -67,19 +67,12 @@ class HostUI {
     static void shutdown();
   #endif
   #ifdef HOST_FILE_ACTION
-    /*
-    * For memory efficiency sake, we use uint8_t indexes for everything:
-    *   0...63  are LCD_HEIGH (entries in page), this also serve as first (top) page request
-    * 64...127  are directory indexes
-    * 128...255 are file indexes
-    * '+' and '-' are PageUp and PageDown
-    * 
-    * TODO: check/revise ranges to reieably use shift division in comparisons, we need every cycle on AVR!!!
-    */
     static void host_file(const char* data);
-    static void request_pginit()              {host_file(STRINGIFY(LCD_HEIGHT));};
-    static void request_pgup()                {host_file("+");};
-    static void request_pgdn()                {host_file("-");};
+    static void request_pginit()            {host_file(STRINGIFY(TERN(HAS_MARLINUI_HD44780, LCD_HEIGHT, (LCD_HEIGHT-1))));};
+    static void request_parent()            {host_file("P");};
+    static void request_pgup()              {host_file("U");};
+    static void request_pgdn()              {host_file("D");};
+    static void request_next()              {host_file("+");};
     static void select_file(const char* id) {host_file(id);};
   #endif
 

@@ -25,21 +25,42 @@
 #if ENABLED(HOST_FILE_SELECT)
 
 #include "../gcode.h"
+#include "../../feature/host_actions.h"
+#include "../../lcd/menu/menu.h"
 
-/**
+/*
  * M472: Send host filename with index
  *  
- *  I<integer> - 8-bit integer index, to be synced with host
+ *  I<integer> - 8-bit integer index
  * 
  *  Usage: M472 I45 benchy.gcode
+ * 
+ * For memory efficiency sake, we use uint8_t indexes for everything
+ *        0  - previous directory
+ *  64..127  - directory indexes
+ * 128..255  - file indexes
+ * 
+ * Action commands:
+ * //action:host_file <char>
+ *    1..63  - number of entries in page (LCD_HEIGHT[-1]), this serve as first (top) page request
+ *        P  - go to parent directory (if any)
+ *        U  - page down (show next group of files/directories) 
+ *        D  - page up
+ *        +  - next entry 
+ * 128..255  - open file and report back full filename for confirmation dialog
+ * 
+ * TODO: check/revise ranges to reieably use shift division in comparisons, we need every cycle on AVR!!!
  */
 void GcodeSuite::M472() {
 
-  if (parser.seenval('I')) {
-    // hfindex = parser.value_byte();
-    
-    // if (parser.string_arg && parser.string_arg[0])
-    //   ui.insert_menu_item(hfindex, parser.string_arg);
+  if (parser.seenval('I') && parser.string_arg && parser.string_arg[0]) {  // only accept full command
+    hfIdx = parser.value_byte();
+    hfName = parser.string_arg;
+
+    SERIAL_ECHO_MSG("I val: ", hfIdx);
+    SERIAL_ECHO_MSG("string: ", hfName);
+
+
   }
 
 }
