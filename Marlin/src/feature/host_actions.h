@@ -67,8 +67,13 @@ class HostUI {
     static void shutdown();
   #endif
   #ifdef HOST_FILE_ACTION
+    #define PGROWS TERN(HAS_MARLINUI_HD44780, LCD_HEIGHT, SUB1(LCD_HEIGHT))
+    #define PGCOLS (LCD_WIDTH - 3)
+    #define PGSIZE (PGROWS * (PGCOLS + 1)) + 1
+    char page_data[PGSIZE];
+    bool page_full = 0;
     static void host_file(const char* data);
-    static void request_pginit()            {host_file(STRINGIFY(TERN(HAS_MARLINUI_HD44780, LCD_HEIGHT, (LCD_HEIGHT-1))));};
+    static void request_pginit()            {host_file(STRINGIFY(PGROWS));};
     static void request_parent()            {host_file("P");};
     static void request_pgup()              {host_file("U");};
     static void request_pgdn()              {host_file("D");};

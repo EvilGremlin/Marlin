@@ -38,7 +38,8 @@
  * For memory efficiency sake, we use uint8_t indexes for everything
  *        0  - previous directory
  *  64..127  - directory indexes
- * 128..255  - file indexes
+ * 128..254  - file indexes
+ *      255  - end of page
  * 
  * Action commands:
  * //action:host_file <char>
@@ -51,18 +52,29 @@
  * 
  * TODO: check/revise ranges to reieably use shift division in comparisons, we need every cycle on AVR!!!
  */
+
+static int i, j = 0, idx = 0;
+
 void GcodeSuite::M472() {
 
-  if (parser.seenval('I') && parser.string_arg && parser.string_arg[0]) {  // only accept full command
-    hfIdx = parser.value_byte();
-    hfName = parser.string_arg;
-
-    SERIAL_ECHO_MSG("I val: ", hfIdx);
-    SERIAL_ECHO_MSG("string: ", hfName);
-
-
+  if (parser.seenval('I')) {
+    i = parser.value_byte();
+    if(i != j && !hostui.page_full) {
+      if (parser.value_byte() == 255 || idx > PGSIZE) {
+        hostui.page_data[idx] = 255;
+        hostui.page_full = true;
+        j = 0, idx = 0;
+      }
+      else if (parser.string_arg[0]) {
+        hostui.page_data[idx] = parser.value_byte();
+        strncpy(&hostui.page_data[idx+1], parser.string_arg, PGCOLS);
+        j = i, idx += PGCOLS+1;
+      }
+    }
   }
 
+  // SERIAL_ECHOLNPGM("page_data: ", F(&hostui.page_data));
+  // SERIAL_ECHOLNPGM("page_data1: ", F(&hostui.page_data[PGCOLS+1]));
 }
 
 #endif // HOST_FILE_SELECT
