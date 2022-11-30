@@ -3977,6 +3977,8 @@
   #define HOST_FILE_CONFIRM_START       // Confirm selected file before printing
   #define HOST_ABORT_NO_COOLDOWN        // Do not turn heaters off oh host print abort (host also must be setup to not turn them off)
   #define HOST_START_MENU_ITEM          // Add a menu item that tells the host to start print of currenty selected file
+  // #define HOST_FILE_PAGE_LENGTH         // Number of entries per page, decrease to lower RAM usage
+  // #define HOST_FILE_PAGE_WIDTH          // Displayed filename length, decrease to lower RAM usage
   // #define HOST_SHUTDOWN_MENU_ITEM       // Add a menu item that tells the host to shut down
 #endif
 

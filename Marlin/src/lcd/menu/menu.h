@@ -210,6 +210,13 @@ void menu_move();
   void menu_media();
 #endif
 
+#if ENABLED(HOST_FILE_SELECT)
+  // static void hfPgInit();
+  // static void hfPgUp();
+  // static void hfPgDn();
+  // static void hfStartPrint(FSTR_P const fstr);
+#endif
+
 ////////////////////////////////////////////
 //////// Menu Item Helper Functions ////////
 ////////////////////////////////////////////

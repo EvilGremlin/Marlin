@@ -67,8 +67,16 @@ class HostUI {
     static void shutdown();
   #endif
   #ifdef HOST_FILE_ACTION
-    #define PGROWS TERN(HAS_MARLINUI_HD44780, LCD_HEIGHT, SUB1(LCD_HEIGHT))
-    #define PGCOLS (LCD_WIDTH - 3)
+    #if ENABLED(HOST_FILE_PAGE_LENGTH)
+      #define PGROWS HOST_FILE_PAGE_LENGTH
+    #else
+      #define PGROWS TERN(HAS_MARLINUI_HD44780 || HAS_MARLINUI_U8GLIB, LCD_HEIGHT, SUB1(LCD_HEIGHT))
+    #endif
+    #if ENABLED(HOST_FILE_PAGE_WIDTH)
+      #define PGCOLS HOST_FILE_PAGE_WIDTH
+    #else
+      #define PGCOLS (LCD_WIDTH - 3)
+    #endif
     #define PGSIZE (PGROWS * (PGCOLS + 1)) + 1
     char page_data[PGSIZE];
     bool page_full = 0;
