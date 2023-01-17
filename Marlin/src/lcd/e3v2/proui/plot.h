@@ -23,8 +23,8 @@
 /**
  * DWIN Single var plot
  * Author: Miguel A. Risco-Castillo
- * Version: 1.0
- * Date: 2022/01/30
+ * Version: 2.1.2
+ * Date: 2022/11/20
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,7 +48,7 @@
 class PlotClass {
 public:
   void Draw(frame_rect_t frame, float max, float ref = 0);
-  void Update(float value);
+  void Update(const_float_t value);
 };
 
 extern PlotClass Plot;

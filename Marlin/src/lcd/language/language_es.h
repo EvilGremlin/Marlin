@@ -234,6 +234,7 @@ namespace Language_es {
   LSTR MSG_MOVE_01MM                      = _UxGT("Mover 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Mover 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Mover 10mm");
+  LSTR MSG_MOVE_50MM                      = _UxGT("Mover 50mm");
   LSTR MSG_MOVE_100MM                     = _UxGT("Mover 100mm");
   LSTR MSG_SPEED                          = _UxGT("Velocidad");
   LSTR MSG_BED_Z                          = _UxGT("Cama Z");
@@ -264,7 +265,6 @@ namespace Language_es {
   LSTR MSG_LCD_OFF                        = _UxGT("Apg");
   LSTR MSG_PID_AUTOTUNE                   = _UxGT("PID Auto-ajuste");
   LSTR MSG_PID_AUTOTUNE_E                 = _UxGT("PID Auto-ajuste *");
-  LSTR MSG_SELECT                         = _UxGT("Seleccionar");
   LSTR MSG_SELECT_E                       = _UxGT("Seleccionar *");
   LSTR MSG_ACC                            = _UxGT("Aceleración");
   LSTR MSG_JERK                           = _UxGT("Jerk");

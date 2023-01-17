@@ -231,6 +231,7 @@ namespace Language_gl {
   LSTR MSG_MOVE_01MM                      = _UxGT("Mover 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Mover 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Mover 10mm");
+  LSTR MSG_MOVE_50MM                      = _UxGT("Mover 50mm");
   LSTR MSG_MOVE_100MM                     = _UxGT("Mover 100mm");
   LSTR MSG_SPEED                          = _UxGT("Velocidade");
   LSTR MSG_BED_Z                          = _UxGT("Cama Z");
@@ -262,10 +263,9 @@ namespace Language_gl {
   LSTR MSG_PID_AUTOTUNE                   = _UxGT("Auto-Sint. PID");
   LSTR MSG_PID_AUTOTUNE_E                 = _UxGT("Auto-Sint. PID *");
   LSTR MSG_PID_AUTOTUNE_DONE              = _UxGT("Fin Auto-Sint PID");
-  LSTR MSG_PID_BAD_EXTRUDER_NUM           = _UxGT("Auto-Sint. fallida! Extrusor danado.");
+  LSTR MSG_PID_BAD_HEATER_ID              = _UxGT("Auto-Sint. fallida! Extrusor danado.");
   LSTR MSG_PID_TEMP_TOO_HIGH              = _UxGT("Auto-Sint. fallida! Temperatura moi alta.");
   LSTR MSG_PID_TIMEOUT                    = _UxGT("Auto-Sint. fallida! Tempo excedido.");
-  LSTR MSG_SELECT                         = _UxGT("Escolla");
   LSTR MSG_SELECT_E                       = _UxGT("Escolla *");
   LSTR MSG_ACC                            = _UxGT("Acel");
   LSTR MSG_JERK                           = _UxGT("Jerk");

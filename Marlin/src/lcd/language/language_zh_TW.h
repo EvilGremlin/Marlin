@@ -226,6 +226,7 @@ namespace Language_zh_TW {
   LSTR MSG_MOVE_01MM                      = _UxGT("移動 0.1 mm");    // "Move 0.1mm"
   LSTR MSG_MOVE_1MM                       = _UxGT("移動 1 mm");      // "Move 1mm"
   LSTR MSG_MOVE_10MM                      = _UxGT("移動 10 mm");     // "Move 10mm"
+  LSTR MSG_MOVE_50MM                      = _UxGT("移動 50 mm");     // "Move 50mm"
   LSTR MSG_MOVE_100MM                     = _UxGT("移動 100 mm");    // "Move 100mm"
   LSTR MSG_SPEED                          = _UxGT("速率");     // "Speed"
   LSTR MSG_BED_Z                          = _UxGT("熱床Z");     // "Bed Z"
@@ -248,7 +249,6 @@ namespace Language_zh_TW {
   LSTR MSG_LCD_ON                         = _UxGT("開 ");     // "On"
   LSTR MSG_LCD_OFF                        = _UxGT("關 ");     // "Off"
 
-  LSTR MSG_SELECT                         = _UxGT("選擇");     // "Select"
   LSTR MSG_SELECT_E                       = _UxGT("選擇 *");
   LSTR MSG_ACC                            = _UxGT("加速度");     // "Accel" acceleration
   LSTR MSG_JERK                           = _UxGT("抖動速率");     // "Jerk"
