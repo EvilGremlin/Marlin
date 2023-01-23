@@ -26,7 +26,7 @@
 
 #include "../../inc/MarlinConfigPre.h"
 
-#if ENABLED(HOST_FILE_SELECT)
+#if BOTH(HAS_MARLINUI_MENU, HOST_FILE_SELECT)
 
 #include "menu_item.h"
 #include "../../feature/host_actions.h"
