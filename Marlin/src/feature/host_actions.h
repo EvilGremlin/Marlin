@@ -70,16 +70,17 @@ class HostUI {
     #if ENABLED(HOST_FILE_PAGE_LENGTH)
       #define PGROWS HOST_FILE_PAGE_LENGTH
     #else
-      #define PGROWS TERN(HAS_MARLINUI_HD44780 || HAS_MARLINUI_U8GLIB, LCD_HEIGHT, SUB1(LCD_HEIGHT))
+      #define PGROWS TERN(DISABLE_ENCODER, SUB1(LCD_HEIGHT), SUB2(LCD_HEIGHT))
     #endif
     #if ENABLED(HOST_FILE_PAGE_WIDTH)
       #define PGCOLS HOST_FILE_PAGE_WIDTH
     #else
       #define PGCOLS (LCD_WIDTH - 3)
     #endif
-    #define PGSIZE (PGROWS * (PGCOLS + 1)) + 1
+    #define PGSIZE (((PGROWS+1) * (PGCOLS+1)) + 1)
     char page_data[PGSIZE];
-    bool page_full = 0;
+    bool pending = false;
+    uint8_t hfIdx = 0;
     static void host_file(const char* data);
     static void request_pginit()            {host_file(STRINGIFY(PGROWS));};
     static void request_parent()            {host_file("P");};

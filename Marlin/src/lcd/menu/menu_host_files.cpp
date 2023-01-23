@@ -21,23 +21,80 @@
  */
 
 //
-// SD Card Menu
+// Host files menu (M472)
 //
 
 #include "../../inc/MarlinConfigPre.h"
 
-#if ENABLED(HOST_FILE_SELECT)
+#if BOTH(HAS_MARLINUI_MENU, HOST_FILE_SELECT)
 
 #include "menu_item.h"
 #include "../../feature/host_actions.h"
 
-PGMSTR(SUBS, "$");
-PGMSTR(MINIT, "get init page");
-PGMSTR(MUP, "page up");
-PGMSTR(MDN, "page down");
-PGMSTR(MSF, "select file");
+// PGMSTR(SUBS, "$");
 
-// static void hfStartPrint(const uint8_t hfidx) {
+// #define HFS_DEBUG
+#if ENABLED(HFS_DEBUG)
+  PGMSTR(DINIT, "get init page");
+  PGMSTR(DSF, "select file 128");
+  PGMSTR(DSD, "select directory 64");
+  PGMSTR(DPD, "previous directory");
+  PGMSTR(DNI, "next item");
+  PGMSTR(DUP, "page up");
+  PGMSTR(DDN, "page down");
+#endif
+ 
+void menu_host_files(){
+  // SERIAL_ECHOLNPGM("sizeof hostui.page_data = ", sizeof(hostui.page_data));
+  char hfName[PGCOLS];
+  if (!hostui.pending) {
+    hostui.request_pginit();
+    hostui.pending = true;
+  }
+  
+  ui.encoder_direction_menus();
+  START_MENU();
+  BACK_ITEM(MSG_MAIN); 
+  if (ui.should_draw()) for (uint16_t idx=0; idx<PGSIZE; idx += PGCOLS+1) {
+    hostui.hfIdx = hostui.page_data[idx];
+    strcpy(hfName, &hostui.page_data[idx+1]);
+
+    // if (hostui.hfIdx == 0) SKIP_ITEM(); // if empty
+    if (hostui.hfIdx == 1)            // if inside dir
+      ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), hostui.request_parent);
+    else if WITHIN(hostui.hfIdx, 64, 127)        // if dir
+      ACTION_ITEM_S_F(hfName, F(LCD_STR_FOLDER " $"), []{hostui.select_file(ui8tostr3rj(hostui.hfIdx));});
+    else if WITHIN(hostui.hfIdx, 128, 254)        // if file
+      ACTION_ITEM_S_F(hfName, F("  $"), []{hostui.select_file(ui8tostr3rj(hostui.hfIdx));});
+    else SKIP_ITEM();                   // if page end 255
+  }
+  
+  #if ENABLED(HFS_DEBUG)
+    ACTION_ITEM_F(F(DINIT),  hostui.request_pginit);
+    ACTION_ITEM_F(F(DSF),    []{hostui.select_file(ui8tostr3rj(128));});
+    ACTION_ITEM_F(F(DSD),    []{hostui.select_file(ui8tostr3rj(64));});
+    ACTION_ITEM_F(F(DDN),    hostui.request_pgdn);
+    ACTION_ITEM_F(F(DUP),    hostui.request_pgup);
+    ACTION_ITEM_F(F(DPD),    hostui.request_parent);
+    ACTION_ITEM_F(F(DNI),    hostui.request_next);
+  #endif
+
+  END_MENU();
+
+  if (_menuLineNr == _thisItemNr) hostui.request_pgdn();
+  if (ui.encoderPosition == 0) hostui.request_pgup();
+
+  SERIAL_ECHOLNPGM("_menuLineNr = ", _menuLineNr);
+  SERIAL_ECHOLNPGM("_thisItemNr = ", _thisItemNr);
+  SERIAL_ECHOLNPGM("ui.encoderPosition = ", ui.encoderPosition);
+  
+}
+
+
+#endif // BOTH(HAS_MARLINUI_MENU, HOST_FILE_SELECT)
+
+
+ // static void hfStartPrint(const uint8_t hfidx) {
 //   #if ENABLED(HOST_FILE_CONFIRM_START)
 // //     MenuItem_submenu::action(fstr, []{
 // //       char * const longest = card.longest_filename();
@@ -55,64 +112,3 @@ PGMSTR(MSF, "select file");
 //     UNUSED(fstr);
 //   #endif
 // }
-
-void menu_host_files(){
-  // ui.encoder_direction_menus();
-  START_MENU();
-  // #if (PGROWS) > 5
-    BACK_ITEM(MSG_MAIN);  // save screen space
-  // #endif 
-
-  bool last_blink = false;
-  // memset(&hostui.page_data, 0x20, PGSIZE);
-  hostui.request_pginit();
-
-  if (last_blink != ui.get_blink()) {
-    last_blink = ui.get_blink();
-    if (hostui.page_full){
-      if (ui.should_draw()){
-        for (int idx=0; idx<=PGSIZE; idx += PGCOLS+1){
-          int hfIdx = hostui.page_data[idx];
-          char hfName = hostui.page_data[idx+1];
-          ACTION_ITEM_S_F(FTOP(hfName), F(SUBS), []{hostui.select_file(ui8tostr3rj(25));});
-        }
-      }
-    }
-    // else SKIP_ITEM();
-
-  }
-
-  // if (ui.should_draw()) 
-    // for (uint8_t i = 0; i < PGLEN; i++) {
-    
-    // if (_menuLineNr == _thisItemNr) {
-      
-      // hostui.request_next();
-
-      // if (hfIdx == 0)
-      //   ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), hostui.request_parent);   // return to previous dir
-      // else if ((PGLEN) < 6)
-      //   BACK_ITEM(MSG_MAIN);
-
-      // if (hfIdx < 128)
-        // ACTION_ITEM_S_F(hfName, F(LCD_STR_FOLDER Language_en::MSG_PID_P), []{hostui.select_file(ui8tostr3rj(hfIdx));});
-      // else if (hfIdx < 255)
-      // ACTION_ITEM_S_F(hostui.hfName, F(SUBS), []{hostui.select_file(ui8tostr3rj(hostui.hfIdx));});
-
-      // hostui.host_item_received = false;
-    
-    // }
-  // }
-
-  // ACTION_ITEM(MSF,    []{hostui.select_file(ui8tostr3rj(hfIdx));});
-  // ACTION_ITEM(MINIT,  hostui.request_pginit);
-  // ACTION_ITEM(MUP,    hostui.request_pgup);
-  // ACTION_ITEM(MDN,    hostui.request_pgdn);
-
-  END_MENU();
-}
-
-
-
-
-#endif // HAS_MARLINUI_MENU && HOST_FILE_SELECT

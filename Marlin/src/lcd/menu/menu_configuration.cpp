@@ -96,7 +96,6 @@ void menu_advanced_settings();
     START_MENU();
 
     BACK_ITEM(MSG_CONFIGURATION);
-
     #if ENABLED(LCD_PROGRESS_BAR_TEST)
       SUBMENU(MSG_PROGRESS_BAR_TEST, _progress_bar_test);
     #endif
@@ -473,7 +472,6 @@ void menu_configuration() {
 
   START_MENU();
   BACK_ITEM(MSG_MAIN);
-
   //
   // Debug Menu when certain options are enabled
   //

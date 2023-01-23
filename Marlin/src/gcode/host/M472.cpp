@@ -33,48 +33,56 @@
  *  
  *  I<integer> - 8-bit integer index
  * 
- *  Usage: M472 I45 benchy.gcode
+ *  Usage: M472 I222 benchy.gcode
  * 
  * For memory efficiency sake, we use uint8_t indexes for everything
- *        0  - previous directory
+ *        1  - previous directory
  *  64..127  - directory indexes
  * 128..254  - file indexes
  *      255  - end of page
  * 
  * Action commands:
  * //action:host_file <char>
- *    1..63  - number of entries in page (LCD_HEIGHT[-1]), this serve as first (top) page request
+ *    1..63  - number of entries in page (LCD_HEIGHT-1), this serve as first (top) page request
  *        P  - go to parent directory (if any)
  *        U  - page down (show next group of files/directories) 
  *        D  - page up
  *        +  - next entry 
- * 128..255  - open file and report back full filename for confirmation dialog
- * 
- * TODO: check/revise ranges to reieably use shift division in comparisons, we need every cycle on AVR!!!
+ *  64..127  - open directory
+ * 128..254  - open file and report back full filename for confirmation dialog
  */
 
-static int i, j = 0, idx = 0;
+static uint8_t i, j = 0;
+static uint16_t idx = 0;
 
 void GcodeSuite::M472() {
 
   if (parser.seenval('I')) {
     i = parser.value_byte();
-    if(i != j && !hostui.page_full) {
-      if (parser.value_byte() == 255 || idx > PGSIZE) {
-        hostui.page_data[idx] = 255;
-        hostui.page_full = true;
-        j = 0, idx = 0;
+    if(i != j && hostui.pending) {
+
+      hostui.page_data[idx] = parser.value_byte();
+
+      if (parser.value_byte() == 255 || idx >= PGSIZE-1) {
+        j = 0, idx = 0, hostui.pending = false;
+        ui.refresh();
       }
       else if (parser.string_arg[0]) {
-        hostui.page_data[idx] = parser.value_byte();
-        strncpy(&hostui.page_data[idx+1], parser.string_arg, PGCOLS);
-        j = i, idx += PGCOLS+1;
+        strncpy(&hostui.page_data[idx+1], parser.string_arg, PGCOLS);  // not scrolling filename
       }
-    }
+      else return;
+      
+      SERIAL_ECHOLNPGM("idx=", idx, "  page_data@idx=", &hostui.page_data[idx]);
+      
+      j = i, idx += PGCOLS+1;
+    } 
   }
 
-  // SERIAL_ECHOLNPGM("page_data: ", F(&hostui.page_data));
+  // SERIAL_ECHOLNPGM("page_data0: ", F(&hostui.page_data));
   // SERIAL_ECHOLNPGM("page_data1: ", F(&hostui.page_data[PGCOLS+1]));
+  // SERIAL_ECHOLNPGM("page_data2: ", F(&hostui.page_data[(PGCOLS+1)*2]));
+  // SERIAL_ECHOLNPGM("page_data3: ", F(&hostui.page_data[(PGCOLS+1)*3]));
+  // SERIAL_ECHOLNPGM("page_data4: ", F(&hostui.page_data[(PGCOLS+1)*4]));
 }
 
 #endif // HOST_FILE_SELECT

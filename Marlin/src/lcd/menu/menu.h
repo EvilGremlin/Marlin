@@ -190,7 +190,7 @@ class MenuEditItemBase : public MenuItemBase {
     static void draw_edit_screen(const char * const value) { draw_edit_screen(editLabel, value); }
 };
 
-#if ENABLED(SDSUPPORT)
+#if EITHER(SDSUPPORT, HOST_FILE_SELECT)
   class CardReader;
   class MenuItem_sdbase {
     public:
@@ -208,13 +208,6 @@ void menu_move();
 
 #if ENABLED(SDSUPPORT)
   void menu_media();
-#endif
-
-#if ENABLED(HOST_FILE_SELECT)
-  // static void hfPgInit();
-  // static void hfPgUp();
-  // static void hfPgDn();
-  // static void hfStartPrint(FSTR_P const fstr);
 #endif
 
 ////////////////////////////////////////////
