@@ -3856,13 +3856,16 @@
   #if ENABLED(HOST_PROMPT_SUPPORT)
     #define HOST_STATUS_NOTIFICATIONS   // Send some status messages to the host as notifications
   #endif
-  #define HOST_FILE_SELECT              // Browse and select host files to print
-  #define HOST_FILE_CONFIRM_START       // Confirm selected file before printing
-  #define HOST_ABORT_NO_COOLDOWN        // Do not turn heaters off oh host print abort (host also must be setup to not turn them off)
-  #define HOST_START_MENU_ITEM          // Add a menu item that tells the host to start print of currenty selected file
-  // #define HOST_FILE_PAGE_LENGTH         // Number of entries per page, decrease to lower RAM usage
-  // #define HOST_FILE_PAGE_WIDTH          // Displayed filename length, decrease to lower RAM usage
   // #define HOST_SHUTDOWN_MENU_ITEM       // Add a menu item that tells the host to shut down
+  #define HOST_ABORT_NO_COOLDOWN        // Do not turn heaters off oh host print abort (host also must be setup to not turn them off)
+  #define HOST_FILE_SELECT              // Browse and select host files from MarlinUI displays
+  #if ENABLED(HOST_FILE_SELECT)
+    #define HOST_FILE_CONFIRM_START       // Show confirmation screen with longer filename (default is 63 symbols) before starting print
+    #define HOST_START_MENU_ITEM          // Add a menu item that tells the host to start print of currenty selected file
+    // #define HOST_FILE_PAGE_LENGTH         // Number of entries per page request, default is screen height, reduce to lower RAM usage
+    // #define HOST_FILE_PAGE_WIDTH          // Displayed filename length, default is screen width, reduce to lower RAM usage
+    #define DEBUG_HOST_FILE
+  #endif
 #endif
 
 // @section extras

@@ -33,8 +33,7 @@
 
 // PGMSTR(SUBS, "$");
 
-// #define HFS_DEBUG
-#if ENABLED(HFS_DEBUG)
+#if ENABLED(DEBUG_HOST_FILE)
   PGMSTR(DINIT, "get init page");
   PGMSTR(DSF, "select file 128");
   PGMSTR(DSD, "select directory 64");
@@ -44,52 +43,66 @@
   PGMSTR(DDN, "page down");
 #endif
  
+bool drawn = false;
+bool can_scroll_up = false;
+char hfName[PGCOLS];
+uint8_t hfIdx = 0;
+
+void clear_data(){
+  memset(hostui.page_data, 0x00, PGSIZE);
+}
+
 void menu_host_files(){
-  // SERIAL_ECHOLNPGM("sizeof hostui.page_data = ", sizeof(hostui.page_data));
-  char hfName[PGCOLS];
-  if (!hostui.pending) {
-    hostui.request_pginit();
-    hostui.pending = true;
-  }
   
   ui.encoder_direction_menus();
   START_MENU();
   BACK_ITEM(MSG_MAIN); 
-  if (ui.should_draw()) for (uint16_t idx=0; idx<PGSIZE; idx += PGCOLS+1) {
-    hostui.hfIdx = hostui.page_data[idx];
-    strcpy(hfName, &hostui.page_data[idx+1]);
 
-    // if (hostui.hfIdx == 0) SKIP_ITEM(); // if empty
-    if (hostui.hfIdx == 1)            // if inside dir
-      ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), hostui.request_parent);
-    else if WITHIN(hostui.hfIdx, 64, 127)        // if dir
-      ACTION_ITEM_S_F(hfName, F(LCD_STR_FOLDER " $"), []{hostui.select_file(ui8tostr3rj(hostui.hfIdx));});
-    else if WITHIN(hostui.hfIdx, 128, 254)        // if file
-      ACTION_ITEM_S_F(hfName, F("  $"), []{hostui.select_file(ui8tostr3rj(hostui.hfIdx));});
-    else SKIP_ITEM();                   // if page end 255
-  }
+  // if (!drawn) {
+    if (!hostui.pending) {
+      hostui.request_pginit();
+      hostui.pending = true;
+    }
+    else if (ui.should_draw()) for (uint16_t idx=0; idx<(PGSIZE-5); idx += (PGCOLS+1)) {
+    
+      hfIdx = hostui.page_data[idx];
+      memcpy(hfName, &hostui.page_data[idx+1], PGCOLS);
+
+      DEBUG_ECHOLNPGM("Drawing... idx=", ui8tostr3rj(hfIdx), "  name=", hfName);
+
+      if (hfIdx == 0) SKIP_ITEM(); // if empty
+      if (hfIdx == 1)            // if inside dir
+        ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), hostui.request_parent);
+      else if WITHIN(hfIdx, 64, 127)        // if dir
+        ACTION_ITEM_S_F(hfName, F(LCD_STR_FOLDER " $"), []{hostui.select_file(ui8tostr3rj(hfIdx));});
+      else if WITHIN(hfIdx, 128, 254)        // if file
+        ACTION_ITEM_S_F(hfName, F("  $"), []{hostui.select_file(ui8tostr3rj(hfIdx));});
+      else break;                   // if page end or null
+    }
+
+  // }
+
   
-  #if ENABLED(HFS_DEBUG)
+  #if ENABLED(DEBUG_HOST_FILE)
     ACTION_ITEM_F(F(DINIT),  hostui.request_pginit);
     ACTION_ITEM_F(F(DSF),    []{hostui.select_file(ui8tostr3rj(128));});
-    ACTION_ITEM_F(F(DSD),    []{hostui.select_file(ui8tostr3rj(64));});
-    ACTION_ITEM_F(F(DDN),    hostui.request_pgdn);
-    ACTION_ITEM_F(F(DUP),    hostui.request_pgup);
-    ACTION_ITEM_F(F(DPD),    hostui.request_parent);
-    ACTION_ITEM_F(F(DNI),    hostui.request_next);
+    // ACTION_ITEM_F(F(DSD),    []{hostui.select_file(ui8tostr3rj(64));});
+    // ACTION_ITEM_F(F(DDN),    hostui.request_pgdn);
+    // ACTION_ITEM_F(F(DUP),    hostui.request_pgup);
+    // ACTION_ITEM_F(F(DPD),    hostui.request_parent);
+    // ACTION_ITEM_F(F(DNI),    hostui.request_next);
   #endif
 
   END_MENU();
 
-  if (_menuLineNr == _thisItemNr) hostui.request_pgdn();
-  if (ui.encoderPosition == 0) hostui.request_pgup();
+  if (encoderLine > 0) can_scroll_up = true;
+  if (encoderLine == 0 && can_scroll_up) {can_scroll_up = false; hostui.request_pgup();}
+  // if (_menuLineNr == _thisItemNr) hostui.request_pgdn();
+  DEBUG_ECHOLNPGM("menuLineNr=", _menuLineNr, "  thisItemNr=", _thisItemNr, "  encPos=", ui.encoderPosition);
+  DEBUG_ECHOLNPGM("encoderTopLine=", encoderTopLine, "  encoderLine=", encoderLine, "  screen_items=", screen_items);
 
-  SERIAL_ECHOLNPGM("_menuLineNr = ", _menuLineNr);
-  SERIAL_ECHOLNPGM("_thisItemNr = ", _thisItemNr);
-  SERIAL_ECHOLNPGM("ui.encoderPosition = ", ui.encoderPosition);
   
 }
-
 
 #endif // BOTH(HAS_MARLINUI_MENU, HOST_FILE_SELECT)
 
