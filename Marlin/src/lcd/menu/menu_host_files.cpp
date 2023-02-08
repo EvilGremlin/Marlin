@@ -44,9 +44,10 @@
 #endif
  
 bool drawn = false;
-bool can_scroll_up = false;
+bool can_scroll_up, can_scroll_down, can_scroll = false;
 char hfName[PGCOLS];
-uint8_t hfIdx = 0;
+uint8_t hfIdx, current_page = 0;
+
 
 void clear_data(){
   memset(hostui.page_data, 0x00, PGSIZE);
@@ -56,12 +57,16 @@ void menu_host_files(){
   
   ui.encoder_direction_menus();
   START_MENU();
-  BACK_ITEM(MSG_MAIN); 
+  if (current_page > 1){ 
+    ACTION_ITEM_F(F(LCD_STR_UPLEVEL), hostui.request_pgup)
+  }
+  else BACK_ITEM(MSG_MAIN); 
 
   // if (!drawn) {
     if (!hostui.pending) {
       hostui.request_pginit();
       hostui.pending = true;
+      current_page = 1;
     }
     else if (ui.should_draw()) for (uint16_t idx=0; idx<(PGSIZE-5); idx += (PGCOLS+1)) {
     
@@ -70,7 +75,7 @@ void menu_host_files(){
 
       DEBUG_ECHOLNPGM("Drawing... idx=", ui8tostr3rj(hfIdx), "  name=", hfName);
 
-      if (hfIdx == 0) SKIP_ITEM(); // if empty
+      // if (hfIdx == 0) SKIP_ITEM(); // if empty
       if (hfIdx == 1)            // if inside dir
         ACTION_ITEM_F(F(LCD_STR_FOLDER " .."), hostui.request_parent);
       else if WITHIN(hfIdx, 64, 127)        // if dir
@@ -84,9 +89,9 @@ void menu_host_files(){
 
   
   #if ENABLED(DEBUG_HOST_FILE)
-    ACTION_ITEM_F(F(DINIT),  hostui.request_pginit);
+    // ACTION_ITEM_F(F(DINIT),  hostui.request_pginit);
     ACTION_ITEM_F(F(DSF),    []{hostui.select_file(ui8tostr3rj(128));});
-    // ACTION_ITEM_F(F(DSD),    []{hostui.select_file(ui8tostr3rj(64));});
+    ACTION_ITEM_F(F(DSD),    []{hostui.select_file(ui8tostr3rj(64));});
     // ACTION_ITEM_F(F(DDN),    hostui.request_pgdn);
     // ACTION_ITEM_F(F(DUP),    hostui.request_pgup);
     // ACTION_ITEM_F(F(DPD),    hostui.request_parent);
@@ -95,11 +100,16 @@ void menu_host_files(){
 
   END_MENU();
 
-  if (encoderLine > 0) can_scroll_up = true;
-  if (encoderLine == 0 && can_scroll_up) {can_scroll_up = false; hostui.request_pgup();}
-  // if (_menuLineNr == _thisItemNr) hostui.request_pgdn();
+  // if (encoderLine > 0)
+  // if (encoderLine == 0 && current_page > 1 ) current_page -=1, hostui.request_pgup();
+  if (_menuLineNr == _thisItemNr) current_page += 1, hostui.request_pgdn();
+
+  // if (encoderLine > 0) can_scroll_up, can_scroll_down = true;
+  // if (encoderLine == 0 && can_scroll_up) {can_scroll_up = false; hostui.request_pgup();}
+  // if (_menuLineNr == _thisItemNr && can_scroll_down) {can_scroll_down = false; hostui.request_pgdn();}
   DEBUG_ECHOLNPGM("menuLineNr=", _menuLineNr, "  thisItemNr=", _thisItemNr, "  encPos=", ui.encoderPosition);
-  DEBUG_ECHOLNPGM("encoderTopLine=", encoderTopLine, "  encoderLine=", encoderLine, "  screen_items=", screen_items);
+  DEBUG_ECHOLNPGM("encTLine=", encoderTopLine, "  encLine=", encoderLine, " scr_itms=", screen_items);
+
 
   
 }
