@@ -379,6 +379,7 @@
    * Kill the machine on a stuck temperature sensor.
    *
    * This feature may cause some thermally-stable systems to halt. Be sure to test it thoroughly under
+   * This feature may cause some thermally-stable systems to halt. Be sure to test it thoroughly under
    * a variety of conditions. Disable if you get false positives.
    *
    * This feature ensures that temperature sensors are updating regularly. If sensors die or get "stuck",
