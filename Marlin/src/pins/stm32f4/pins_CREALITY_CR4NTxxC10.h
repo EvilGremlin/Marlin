@@ -26,6 +26,10 @@
 //    #error "Creality Ender Series only supports one hotend / E-stepper. Comment out this line to continue."
 // #endif
 
+#if !AXIS_DRIVER_TYPE_X(TMC2209) || !AXIS_DRIVER_TYPE_Y(TMC2209) || !AXIS_DRIVER_TYPE_Z(TMC2209) || !AXIS_DRIVER_TYPE_E0(TMC2209)
+  #error "This board have soldered TMC2209 drivers for X,Y,Z,E0"
+#endif
+
 #define BOARD_INFO_NAME         "CR4NT220622C10"
 #define BOARD_WEBSITE_URL       "www.creality.com"
 #ifndef DEFAULT_MACHINE_NAME
