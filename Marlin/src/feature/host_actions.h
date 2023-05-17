@@ -24,6 +24,12 @@
 #include "../inc/MarlinConfigPre.h"
 #include "../HAL/shared/Marduino.h"
 
+#if ENABLED(DEBUG_HOST_FILE)
+  #define DEBUG_OUT 1
+  #include "../core/debug_out.h"
+  #include "../libs/hex_print.h"
+#endif
+
 #if ENABLED(HOST_PROMPT_SUPPORT)
 
   enum PromptReason : uint8_t {
@@ -68,7 +74,34 @@ class HostUI {
   #ifdef SHUTDOWN_ACTION
     static void shutdown();
   #endif
-
+  #ifdef HOST_FILE_ACTION
+    #if ENABLED(HOST_FILE_PAGE_LENGTH)
+      #define PGROWS HOST_FILE_PAGE_LENGTH
+    #else
+      #define PGROWS TERN(DISABLE_ENCODER, LCD_HEIGHT, SUB1(LCD_HEIGHT))
+    #endif
+    #if ENABLED(HOST_FILE_PAGE_WIDTH)
+      #define PGCOLS HOST_FILE_PAGE_WIDTH
+    #else
+      #define PGCOLS (LCD_WIDTH-3)
+    #endif
+    #define PGSIZE (((PGROWS) * (PGCOLS+1)) + 1)    // asking for one screen worth of items
+    #if ENABLED(HOST_FILE_CONFIRM_START)
+      #define HFFLEN 63           // max filename length to display in confirmation dialog
+      char hfFullName[HFFLEN+1];  // to be removed in favor of reusing page_data!!
+    #endif
+    char page_data[PGSIZE];
+    bool pending = false, drawn = false;
+    // uint8_t hfIdx = 0;
+    static void host_file(const char* data);
+    static void request_pginit()            {host_file(STRINGIFY(PGROWS));};
+    static void request_parent()            {host_file("P");};
+    static void request_pgup()              {host_file("U");};
+    static void request_pgdn()              {host_file("D");};
+    static void request_next()              {host_file("+");};
+    static void select_file(const char* id) {host_file(id);};
+  #endif
+ 
   #if ENABLED(G29_RETRY_AND_RECOVER)
     #ifdef ACTION_ON_G29_RECOVER
       static void g29_recover();

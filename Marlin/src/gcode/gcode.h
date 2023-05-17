@@ -243,6 +243,7 @@
  * M425 - Enable/Disable and tune backlash correction. (Requires BACKLASH_COMPENSATION and BACKLASH_GCODE)
  * M428 - Set the home_offset based on the current_position. Nearest edge applies. (Disabled by NO_WORKSPACE_OFFSETS or DELTA)
  * M430 - Read the system current, voltage, and power (Requires POWER_MONITOR_CURRENT, POWER_MONITOR_VOLTAGE, or POWER_MONITOR_FIXED_VOLTAGE)
+ * M472 - Send host filename with index (Requires HOST_FILE_SELECT)
  * M486 - Identify and cancel objects. (Requires CANCEL_OBJECTS)
  * M500 - Store parameters in EEPROM. (Requires EEPROM_SETTINGS)
  * M501 - Restore parameters from EEPROM. (Requires EEPROM_SETTINGS)
@@ -1264,6 +1265,10 @@ private:
   #if ENABLED(CONTROLLER_FAN_EDITABLE)
     static void M710();
     static void M710_report(const bool forReplay=true);
+  #endif
+
+  #if ENABLED(HOST_FILE_SELECT)
+    static void M472();
   #endif
 
   static void T(const int8_t tool_index);

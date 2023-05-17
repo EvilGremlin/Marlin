@@ -488,6 +488,7 @@ namespace Language_ru {
   LSTR MSG_CANCEL_OBJECT_N                  = _UxGT("Завершить объект {");
   LSTR MSG_OUTAGE_RECOVERY                  = _UxGT("Восстановение сбоя");
   LSTR MSG_MEDIA_MENU                       = _UxGT("Печать с SD карты");
+  LSTR MSG_HOST_FILES                       = _UxGT("Файлы хоста");
   LSTR MSG_NO_MEDIA                         = _UxGT("Нет SD карты");
   LSTR MSG_DWELL                            = _UxGT("Сон...");
   LSTR MSG_USERWAIT                         = _UxGT("Продолжить...");

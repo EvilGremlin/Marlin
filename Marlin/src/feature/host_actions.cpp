@@ -81,6 +81,14 @@ void HostUI::action(FSTR_P const fstr, const bool eol) {
   void HostUI::shutdown() { action(F(SHUTDOWN_ACTION)); }
 #endif
 
+#ifdef HOST_FILE_ACTION
+  void HostUI::host_file(const char* data){
+    action(F(HOST_FILE_ACTION), false);
+    SERIAL_ECHOLN(data);
+  }
+#endif
+
+
 #if ENABLED(HOST_PROMPT_SUPPORT)
 
   PromptReason HostUI::host_prompt_reason = PROMPT_NOT_DEFINED;
