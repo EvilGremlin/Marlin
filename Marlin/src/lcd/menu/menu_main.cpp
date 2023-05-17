@@ -66,15 +66,15 @@
   #include "../../feature/repeat.h"
 #endif
 
+#if ENABLED(HOST_FILE_SELECT)
+  void menu_host_files();
+#endif
+
 void menu_tune();
 void menu_cancelobject();
 void menu_motion();
 void menu_temperature();
 void menu_configuration();
-
-#if ENABLED(HOST_FILE_SELECT)
-  void menu_host_files();
-#endif
 
 #if HAS_POWER_MONITOR
   void menu_power_monitor();

@@ -878,7 +878,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #if HAS_POWER_MONITOR
         case 430: M430(); break;                                  // M430: Read the system current (A), voltage (V), and power (W)
       #endif
-
+      
+      #if ENABLED(HOST_FILE_SELECT)
+        case 472: M472(); break;                                  // M472: Send host filename with index
+      #endif
+      
       #if ENABLED(CANCEL_OBJECTS)
         case 486: M486(); break;                                  // M486: Identify and cancel objects
       #endif
@@ -1093,9 +1097,6 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 3426: M3426(); break;                                // M3426: Read MCP3426 ADC (over i2c)
       #endif
 
-      #if ENABLED(HOST_FILE_SELECT)
-        case 472:  M472(); break;                                 //M472: Send host filename with index
-      #endif
 
       default: parser.unknown_command_warning(); break;
     }

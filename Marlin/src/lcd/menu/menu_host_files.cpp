@@ -42,30 +42,30 @@
   PGMSTR(DUP, "page up");
   PGMSTR(DDN, "page down");
 #endif
- 
+
 bool drawn = false;
 bool can_scroll_up, can_scroll_down, can_scroll = false;
 char hfName[PGCOLS];
 uint8_t hfIdx, current_page = 0;
 
-  bool last_blink = false;
-  // memset(&hostui.page_data, 0x20, PGSIZE);
-  hostui.request_pginit();
+bool last_blink = false;
+// memset(&hostui.page_data, 0x20, PGSIZE);
+// hostui.request_pginit();
 
-  if (last_blink != ui.get_blink()) {
-    last_blink = ui.get_blink();
-    if (hostui.page_full){
-      if (ui.should_draw()){
-        for (int idx=0; idx<=PGSIZE; idx += PGCOLS+1){
-          int hfIdx = hostui.page_data[idx];
-          char hfName = hostui.page_data[idx+1];
-          ACTION_ITEM_S_F(FTOP(hfName), F(SUBS), []{hostui.select_file(ui8tostr3rj(25));});
-        }
-      }
-    }
-    // else SKIP_ITEM();
+// if (last_blink != ui.get_blink()) {
+//   last_blink = ui.get_blink();
+//   if (hostui.page_full){
+//     if (ui.should_draw()){
+//       for (int idx=0; idx<=PGSIZE; idx += PGCOLS+1){
+//         int hfIdx = hostui.page_data[idx];
+//         char hfName = hostui.page_data[idx+1];
+//         ACTION_ITEM_S_F(FTOP(hfName), F(SUBS), []{hostui.select_file(ui8tostr3rj(25));});
+//       }
+//     }
+//   }
+//   // else SKIP_ITEM();
 
-  }
+// }
 
   // if (ui.should_draw()) 
     // for (uint8_t i = 0; i < PGLEN; i++) {
@@ -103,9 +103,9 @@ void menu_host_files(){
   ui.encoder_direction_menus();
   START_MENU();
   if (current_page > 1){ 
-    ACTION_ITEM_F(F(LCD_STR_UPLEVEL), hostui.request_pgup)
+    ACTION_ITEM_F(F(LCD_STR_UPLEVEL), hostui.request_pgup);
   }
-  else BACK_ITEM(MSG_MAIN); 
+  else BACK_ITEM(MSG_MAIN_MENU); 
 
   // if (!drawn) {
     if (!hostui.pending) {

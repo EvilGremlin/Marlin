@@ -1041,6 +1041,10 @@ private:
   #if HAS_POWER_MONITOR
     static void M430();
   #endif
+  
+  #if ENABLED(HOST_FILE_SELECT)
+    static void M472();
+  #endif
 
   #if ENABLED(CANCEL_OBJECTS)
     static void M486();
@@ -1265,10 +1269,6 @@ private:
   #if ENABLED(CONTROLLER_FAN_EDITABLE)
     static void M710();
     static void M710_report(const bool forReplay=true);
-  #endif
-
-  #if ENABLED(HOST_FILE_SELECT)
-    static void M472();
   #endif
 
   static void T(const int8_t tool_index);
