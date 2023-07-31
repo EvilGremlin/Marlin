@@ -73,7 +73,7 @@
 #endif
 
 #define FIL_RUNOUT_PIN    67
-#define FILWIDTH_PIN      A11
+#define FILWIDTH_PIN      A12
 #define PS_ON_PIN         57
 #define CASE_LIGHT_PIN    56
 #define Z_MIN_PROBE_PIN   58
@@ -1740,7 +1740,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR true
+#define INVERT_E0_DIR false
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
