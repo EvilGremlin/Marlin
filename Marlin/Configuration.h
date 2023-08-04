@@ -62,7 +62,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(Phr3d13, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "EvilGremlin" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 // @section machine
@@ -73,15 +73,15 @@
 #endif
 
 #define FIL_RUNOUT_PIN    67
-#define FILWIDTH_PIN      A12
+#define FILWIDTH_PIN      12
 #define PS_ON_PIN         57
 #define CASE_LIGHT_PIN    56
 #define Z_MIN_PROBE_PIN   58
 
-#define X_SERIAL_TX_PIN   65 
-#define X_SERIAL_RX_PIN   65 
-#define Y_SERIAL_TX_PIN   65 
-#define Y_SERIAL_RX_PIN   65 
+#define X_SERIAL_TX_PIN   65
+#define X_SERIAL_RX_PIN   65
+#define Y_SERIAL_TX_PIN   65
+#define Y_SERIAL_RX_PIN   65
 #define E0_SERIAL_TX_PIN  65
 #define E0_SERIAL_RX_PIN  65
 
@@ -1406,7 +1406,7 @@
   #define Z_SERVO_ANGLES { 120, 30 }      // Z Servo Deploy and Stow angles
   //#define Z_SERVO_MEASURE_ANGLE 45      // Use if the servo must move to a "free" position for measuring after deploy
   //#define Z_SERVO_INTERMEDIATE_STOW     // Stow the probe between points
-  #define Z_SERVO_DEACTIVATE_AFTER_STOW // Deactivate the servo when probe is stowed
+  // #define Z_SERVO_DEACTIVATE_AFTER_STOW // Deactivate the servo when probe is stowed
 #endif
 
 /**
@@ -1860,7 +1860,7 @@
  */
 #define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
+  #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
   #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
@@ -3565,10 +3565,10 @@
 // (ms) Delay before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.
 // If the servo can't reach the requested position, increase it.
-#define SERVO_DELAY { 300 }
+#define SERVO_DELAY { 500 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
-//#define DEACTIVATE_SERVOS_AFTER_MOVE
+// #define DEACTIVATE_SERVOS_AFTER_MOVE
 
 // Edit servo angles with M281 and save to EEPROM with M500
 #define EDITABLE_SERVO_ANGLES
