@@ -1406,7 +1406,7 @@
   #define Z_SERVO_ANGLES { 120, 30 }      // Z Servo Deploy and Stow angles
   //#define Z_SERVO_MEASURE_ANGLE 45      // Use if the servo must move to a "free" position for measuring after deploy
   //#define Z_SERVO_INTERMEDIATE_STOW     // Stow the probe between points
-  // #define Z_SERVO_DEACTIVATE_AFTER_STOW // Deactivate the servo when probe is stowed
+  #define Z_SERVO_DEACTIVATE_AFTER_STOW // Deactivate the servo when probe is stowed
 #endif
 
 /**
@@ -1564,7 +1564,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 6, 41, -1 }
+#define NOZZLE_TO_PROBE_OFFSET { 6, 41, -1.7 }
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
 #define PROBING_TOOL 0
@@ -3568,10 +3568,11 @@
 #define SERVO_DELAY { 500 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
-// #define DEACTIVATE_SERVOS_AFTER_MOVE
+#define DEACTIVATE_SERVOS_AFTER_MOVE
 
 // Edit servo angles with M281 and save to EEPROM with M500
 #define EDITABLE_SERVO_ANGLES
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
-//#define SERVO_DETACH_GCODE
+
+#define SERVO_DETACH_GCODE
