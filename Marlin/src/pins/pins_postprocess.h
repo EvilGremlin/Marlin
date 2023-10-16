@@ -26,6 +26,11 @@
 // Post-process pins according to configured settings
 //
 
+
+#if ENABLED(THROW_SERIAL_WARNING)
+  #error "Serial port configuration errors encountered, define SKIP_SERIAL_PORT_CHECK to bypass these errors."
+#endif
+
 // Define certain undefined pins
 #ifndef X_MS1_PIN
   #define X_MS1_PIN -1
@@ -1610,7 +1615,7 @@
       #define W_STOP_PIN Y_MIN_PIN
     #elif DIAG_REMAPPED(W, Z_MIN)
       #define W_STOP_PIN Z_MIN_PIN
-    #elif DIAG_REMAPPED(W, X_MAX)
+    #elif DIAG_REMAPPED(W, X_MAX)1
       #define W_STOP_PIN X_MAX_PIN
     #elif DIAG_REMAPPED(W, Y_MAX)
       #define W_STOP_PIN Y_MAX_PIN

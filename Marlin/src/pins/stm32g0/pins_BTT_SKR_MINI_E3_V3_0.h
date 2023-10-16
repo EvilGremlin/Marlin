@@ -25,13 +25,17 @@
 
 //#define BOARD_CUSTOM_BUILD_FLAGS -DTONE_CHANNEL=4 -DTONE_TIMER=4 -DTIMER_TONE=4
 
-#if ANY(SERIAL_PORT   == '1', NUMERIC(SERIAL_PORT)   > 2, \
-        SERIAL_PORT_2 == '1', NUMERIC(SERIAL_PORT_2) > 2)
-  #error "Available SERIAL_PORT values for this board are -1 and 2"
-#elif defined(LCD_SERIAL_PORT) && (LCD_SERIAL_PORT != 1)
-  #error "On this board LCD_SERIAL_PORT is 1" // this is just for documentation sake
-#elif defined(SERIAL_PORT_3)
-  #error "On this board only two SERIAL_PORTs are available for host connection"
+#if DISABLED(SKIP_SERIAL_PORT_CHECK)
+  #if SERIAL_PORT == 1    || NUMERIC(SERIAL_PORT)   > 2 || \
+      SERIAL_PORT_2 == 1  || NUMERIC(SERIAL_PORT_2) > 2
+    #error "Available SERIAL_PORT values for this board are -1 and 2"
+  #elif defined(LCD_SERIAL_PORT) && (LCD_SERIAL_PORT != 1)
+    #error "On this board LCD_SERIAL_PORT is 1" // this is just for documentation sake
+  #elif defined(SERIAL_PORT_3)
+    #error "On this board only two SERIAL_PORTs are available for host connection"
+  #else 
+    #undef THROW_SERIAL_WARNING
+  #endif
 #endif
 
 #ifndef BOARD_INFO_NAME

@@ -1233,6 +1233,13 @@
   #define HAS_USER_ITEM(N) 0
 #endif
 
+// Skip ports ckeck in case of custom cables and such
+#if ENABLED(SKIP_SERIAL_PORT_CHECK)
+  #warning "Skipping check for valid serial ports!"
+#else
+  #define THROW_SERIAL_WARNING
+#endif
+
 /**
  * LCD_SERIAL_PORT must be defined ahead of HAL.h and
  * currently HAL.h must be included ahead of pins.h.
