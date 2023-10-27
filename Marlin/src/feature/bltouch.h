@@ -77,7 +77,6 @@ public:
   #endif
 
   static float z_extra_clearance() { return TERN0(HAS_BLTOUCH_HS_MODE, high_speed_mode ? BLTOUCH_HS_EXTRA_CLEARANCE : 0); }
-  
   // DEPLOY and STOW are wrapped for error handling - these are used by homing and by probing
   static bool deploy()              { return deploy_proc(); }
   static bool stow()                { return stow_proc(); }
