@@ -93,7 +93,7 @@
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
 #define BAUDRATE 115200
-// #define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
+//#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
@@ -661,7 +661,7 @@
  * PIDTEMP : PID temperature control (~4.1K)
  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
  */
-// #define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+//#define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
 #define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
@@ -763,16 +763,6 @@
  * With this option disabled, bang-bang will be used. BED_LIMIT_SWITCHING enables hysteresis.
  */
 #define PIDTEMPBED
-
-//#define BED_LIMIT_SWITCHING
-
-/**
- * Max Bed Power
- * Applies to all forms of bed control (PID, bang-bang, and bang-bang with hysteresis).
- * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
- * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
- */
-#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
@@ -1267,8 +1257,6 @@
  *   M204 P    Acceleration
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
- *   M204 I    Angular Acceleration
- *   M204 J    Angular Travel Acceleration
  */
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
@@ -2334,7 +2322,7 @@
  */
 #define EEPROM_SETTINGS       // Persistent storage with M500 and M501
 #define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-// #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+//#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   //#define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
@@ -2622,7 +2610,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-// #define SDSUPPORT
+//#define SDSUPPORT
 
 /**
  * SD CARD: ENABLE CRC
