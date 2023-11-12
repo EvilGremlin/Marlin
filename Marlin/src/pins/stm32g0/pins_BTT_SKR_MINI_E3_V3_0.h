@@ -26,13 +26,11 @@
 //#define BOARD_CUSTOM_BUILD_FLAGS -DTONE_CHANNEL=4 -DTONE_TIMER=4 -DTIMER_TONE=4
 
 #if DISABLED(SKIP_SERIAL_PORT_CHECK)
-  #if SERIAL_PORT == 1    || NUMERIC(SERIAL_PORT)   > 2 || \
-      SERIAL_PORT_2 == 1  || NUMERIC(SERIAL_PORT_2) > 2
-    #error "Available SERIAL_PORT values for this board are -1 and 2"
+  #if SERIAL_PORT   == 1  || SERIAL_PORT   > 2 || \
+      SERIAL_PORT_2 == 1  || SERIAL_PORT_2 > 2
+    #error "Available SERIAL_PORT values for this board are: -1, 1, 2"
   #elif defined(LCD_SERIAL_PORT) && (LCD_SERIAL_PORT != 1)
-    #error "On this board LCD_SERIAL_PORT is 1" // this is just for documentation sake
-  #elif defined(SERIAL_PORT_3)
-    #error "On this board only two SERIAL_PORTs are available for host connection"
+    #error "Available LCD_SERIAL_PORT values for this board are: 1, 2"
   #else 
     #undef THROW_SERIAL_WARNING
   #endif
@@ -166,9 +164,9 @@
  */
 #define EXP1_01_PIN                         PB5
 #define EXP1_02_PIN                         PA15
-#define EXP1_03_PIN                         PA9
+#define EXP1_03_PIN                         PA9    // USART1 TX
 #define EXP1_04_PIN                         -1
-#define EXP1_05_PIN                         PA10
+#define EXP1_05_PIN                         PA10   // USART1 RX
 #define EXP1_06_PIN                         PB9
 #define EXP1_07_PIN                         PB8
 #define EXP1_08_PIN                         PD6

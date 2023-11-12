@@ -25,6 +25,18 @@
 
 //#define BOARD_CUSTOM_BUILD_FLAGS -DTONE_CHANNEL=4 -DTONE_TIMER=4 -DTIMER_TONE=4
 
+#if DISABLED(SKIP_SERIAL_PORT_CHECK)
+  #if WITHIN(SERIAL_PORT,   1, 2)  || SERIAL_PORT   > 5 || \
+      WITHIN(SERIAL_PORT_2, 1, 2)  || SERIAL_PORT_2 > 5 || \
+      WITHIN(SERIAL_PORT_3, 1, 2)  || SERIAL_PORT_3 > 5
+    #error "Available SERIAL_PORT values for this board are: -1, 3, 4, 5"
+  #elif defined(LCD_SERIAL_PORT) && !WITHIN(LCD_SERIAL_PORT, 3, 5)
+    #error "Available LCD_SERIAL_PORT values for this board are: 3, 4, 5"
+  #else 
+    #undef THROW_SERIAL_WARNING
+  #endif
+#endif
+
 #define USES_DIAG_JUMPERS
 
 // Ignore temp readings during development.
@@ -191,6 +203,9 @@
   #define E0_SERIAL_TX_PIN                  PD0
   #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
 
+  #define E1_SERIAL_TX_PIN                  PF8
+  #define E1_SERIAL_RX_PIN      E1_SERIAL_TX_PIN
+
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
     #define TMC_BAUD_RATE                  19200
@@ -245,22 +260,22 @@
  *                ------                                    ------
  *                 EXP1                                      EXP2
  */
-#define EXP1_01_PIN                         PE9
-#define EXP1_02_PIN                         PE10
-#define EXP1_03_PIN                         PE11
+#define EXP1_01_PIN                         PE9   // USART4 RX
+#define EXP1_02_PIN                         PE10  // USART5 TX
+#define EXP1_03_PIN                         PE11  // USART5 RX
 #define EXP1_04_PIN                         PE12
 #define EXP1_05_PIN                         PE13
 #define EXP1_06_PIN                         PE14
 #define EXP1_07_PIN                         PE15
-#define EXP1_08_PIN                         PB10
+#define EXP1_08_PIN                         PB10  // USART3 TX
 
 #define EXP2_01_PIN                         PB14
 #define EXP2_02_PIN                         PB13
 #define EXP2_03_PIN                         PF7
 #define EXP2_04_PIN                         PB12
 #define EXP2_05_PIN                         PE7
-#define EXP2_06_PIN                         PB11
-#define EXP2_07_PIN                         PE8
+#define EXP2_06_PIN                         PB11  // USART3 RX
+#define EXP2_07_PIN                         PE8   // USART4_TX
 #define EXP2_08_PIN                         -1
 
 //

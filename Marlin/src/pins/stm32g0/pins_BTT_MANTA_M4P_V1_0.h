@@ -25,6 +25,18 @@
 
 //#define BOARD_CUSTOM_BUILD_FLAGS -DTONE_CHANNEL=4 -DTONE_TIMER=4 -DTIMER_TONE=4
 
+#if DISABLED(SKIP_SERIAL_PORT_CHECK)
+  #if SERIAL_PORT   == 2  || SERIAL_PORT   > 3 || \
+      SERIAL_PORT_2 == 2  || SERIAL_PORT_2 > 3 || \
+      SERIAL_PORT_3 == 2  || SERIAL_PORT_3 > 3
+    #error "Available SERIAL_PORT values for this board are: -1, 1, 3"
+  #elif defined(LCD_SERIAL_PORT) && (LCD_SERIAL_PORT != 1 || LCD_SERIAL_PORT != 3)
+    #error "Available LCD_SERIAL_PORT values for this board are: 1, 3"
+  #else 
+    #undef THROW_SERIAL_WARNING
+  #endif
+#endif
+
 #ifndef BOARD_INFO_NAME
   #define BOARD_INFO_NAME "BTT Manta M4P V1.0"
 #endif
@@ -169,12 +181,12 @@
  *                 EXP1                                      EXP2
  */
 #define EXP1_01_PIN                         PD6
-#define EXP1_02_PIN                         PB8
-#define EXP1_03_PIN                         PB9
+#define EXP1_02_PIN                         PB8   // USART3 TX
+#define EXP1_03_PIN                         PB9   // USART3 RX
 #define EXP1_04_PIN                         PC3
 #define EXP1_05_PIN                         PA15
-#define EXP1_06_PIN                         PA10
-#define EXP1_07_PIN                         PA9
+#define EXP1_06_PIN                         PA10  // USART1 RX
+#define EXP1_07_PIN                         PA9   // USART1 TX
 #define EXP1_08_PIN                         PB5
 
 #define EXP2_01_PIN                         PB14

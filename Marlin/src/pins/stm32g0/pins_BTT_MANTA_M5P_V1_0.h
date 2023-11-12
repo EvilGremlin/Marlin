@@ -23,6 +23,18 @@
 
 #include "env_validate.h"
 
+#if DISABLED(SKIP_SERIAL_PORT_CHECK)
+  #if SERIAL_PORT   > 3 || \
+      SERIAL_PORT_2 > 3 || \
+      SERIAL_PORT_3 > 3
+    #error "Available SERIAL_PORT values for this board are: -1, 1, 2, 3"
+  #elif defined(LCD_SERIAL_PORT) && !WITHIN(LCD_SERIAL_PORT, 1, 3)
+    #error "Available LCD_SERIAL_PORT values for this board are: 1, 2, 3"
+  #else 
+    #undef THROW_SERIAL_WARNING
+  #endif
+#endif
+
 #ifndef BOARD_INFO_NAME
   #define BOARD_INFO_NAME "BTT Manta M5P V1.0"
 #endif
@@ -196,19 +208,19 @@
  *                ------                                   ------
  *                 EXP1                                     EXP2
  */
-#define EXP1_01_PIN                         PD5
+#define EXP1_01_PIN                         PD5   // USART2 TX
 #define EXP1_02_PIN                         PD4
 #define EXP1_03_PIN                         PB3
-#define EXP1_04_PIN                         PD6
+#define EXP1_04_PIN                         PD6   // USART2 RX
 #define EXP1_05_PIN                         PB5
 #define EXP1_06_PIN                         PB4
-#define EXP1_07_PIN                         PB7
-#define EXP1_08_PIN                         PB6
+#define EXP1_07_PIN                         PB7   // USART1 RX
+#define EXP1_08_PIN                         PB6   // USART1 TX
 
 #define EXP2_01_PIN                         PB14
 #define EXP2_02_PIN                         PB13
-#define EXP2_03_PIN                         PB8
-#define EXP2_04_PIN                         PB9
+#define EXP2_03_PIN                         PB8   // USART3 TX
+#define EXP2_04_PIN                         PB9   // USART3 RX
 #define EXP2_05_PIN                         PC10
 #define EXP2_06_PIN                         PB15
 #define EXP2_07_PIN                         PC12

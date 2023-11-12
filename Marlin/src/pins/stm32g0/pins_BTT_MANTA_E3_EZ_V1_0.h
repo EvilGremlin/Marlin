@@ -23,6 +23,17 @@
 
 #include "env_validate.h"
 
+#if DISABLED(SKIP_SERIAL_PORT_CHECK)
+  #if WITHIN(SERIAL_PORT,   1, 2) || WITHIN(SERIAL_PORT,   4, 5) || SERIAL_PORT   > 6 || \
+      WITHIN(SERIAL_PORT_2, 1, 2) || WITHIN(SERIAL_PORT_2, 4, 5) || SERIAL_PORT_2 > 6
+    #error "Available SERIAL_PORT values for this board are: -1, 3, 6"
+  #elif defined(LCD_SERIAL_PORT) && (LCD_SERIAL_PORT != 3 || LCD_SERIAL_PORT != 6)
+    #error "Available LCD_SERIAL_PORT values for this board are: 3, 6"
+  #else 
+    #undef THROW_SERIAL_WARNING
+  #endif
+#endif
+
 #ifndef BOARD_INFO_NAME
   #define BOARD_INFO_NAME "BTT Manta E3 EZ V1.0"
 #endif
@@ -224,11 +235,11 @@
  *                ------
  *                 EXP1
  */
-#define EXP1_01_PIN                         PC1
+#define EXP1_01_PIN                         PC1   // USART6 RX
 #define EXP1_02_PIN                         PC2
 #define EXP1_03_PIN                         PC3
 #define EXP1_04_PIN                         -1
-#define EXP1_05_PIN                         PC0
+#define EXP1_05_PIN                         PC0   // USART6 TX
 #define EXP1_06_PIN                         PA0
 #define EXP1_07_PIN                         PA2
 #define EXP1_08_PIN                         PA1
