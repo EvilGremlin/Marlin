@@ -66,7 +66,7 @@ if len(sys.argv) <= 2:
     print("Utility to export a image in Marlin TFT friendly format.")
     print("It will dump a raw bin RGB565 image or create a CPP file with an array of 16 bit image pixels.")
     print("Usage: gen-tft-image.py INPUT_IMAGE.(png|bmp|jpg) OUTPUT_FILE.(cpp|bin) [--transparency]")
-    print("Author: rhapsodyv")
+    print("Authors: rhapsodyv, thinkyhead")
     exit(1)
 
 transparency = len(sys.argv) > 3 and sys.argv[3] == "--transparency"
