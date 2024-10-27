@@ -169,3 +169,5 @@ __pycache__
 tags
 *.logs
 *.bak
+.aider*
+.env

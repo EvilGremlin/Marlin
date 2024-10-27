@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2024 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -21,8 +21,10 @@
  */
 #pragma once
 
+#error "PINS_DEBUGGING is not yet supported for ESP32!"
+
 /**
- * Pins Debugging for LPC1768/9
+ * Pins Debugging for ESP32
  *
  *   - NUMBER_PINS_TOTAL
  *   - MULTI_NAME_PAD
@@ -42,28 +44,28 @@
  */
 
 #define NUMBER_PINS_TOTAL NUM_DIGITAL_PINS
-#define isAnalogPin(P) (digitalPinToAnalogIndex(P) >= 0)
+#define MULTI_NAME_PAD 16 // space needed to be pretty if not first name assigned to a pin
+
 #define digitalRead_mod(P) extDigitalRead(P)
-#define getPinByIndex(x) pin_array[x].pin
 #define printPinNameByIndex(x) do{ sprintf_P(buffer, PSTR("%-" STRINGIFY(MAX_NAME_LENGTH) "s"), pin_array[x].name); SERIAL_ECHO(buffer); }while(0)
-#define printPinNumber(P) do{ sprintf_P(buffer, PSTR("P%d_%02d"), LPC176x::pin_port(P), LPC176x::pin_bit(P)); SERIAL_ECHO(buffer); }while(0)
-#define printPinAnalog(P) do{ sprintf_P(buffer, PSTR("_A%d     "), LPC176x::pin_get_adc_channel(P)); SERIAL_ECHO(buffer); }while(0)
-#define MULTI_NAME_PAD 17 // space needed to be pretty if not first name assigned to a pin
-
-// pins that will cause hang/reset/disconnect in M43 Toggle and Watch utilities
-#ifndef M43_NEVER_TOUCH
-  #define M43_NEVER_TOUCH(Q) ((Q) == P0_29 || (Q) == P0_30 || (Q) == P2_09)  // USB pins
-#endif
-
-bool getValidPinMode(const pin_t pin) {
-  if (!LPC176x::pin_is_valid(pin) || LPC176x::pin_adc_enabled(pin)) // Invalid pin or active analog pin
-    return false;
-
-  return LPC176x::gpio_direction(pin);
-}
-
-#define getPinIsDigitalByIndex(x) ((bool) pin_array[x].is_digital)
+#define printPinNumber(P) do{ sprintf_P(buffer, PSTR("%02d"), P); SERIAL_ECHO(buffer); }while(0)
+#define printPinAnalog(P) do{ sprintf_P(buffer, PSTR(" (A%2d)  "), digitalPinToAnalogIndex(P)); SERIAL_ECHO(buffer); }while(0)
+#define getPinByIndex(x) pin_array[x].pin
+#define getPinIsDigitalByIndex(x) pin_array[x].is_digital
+#define isValidPin(P) (P >= 0 && P < pin_t(NUMBER_PINS_TOTAL))
+#define digitalPinToAnalogIndex(P) int(P - analogInputToDigitalPin(0))
+#define isAnalogPin(P) WITHIN(P, pin_t(analogInputToDigitalPin(0)), pin_t(analogInputToDigitalPin(NUM_ANALOG_INPUTS - 1)))
+bool pwm_status(const pin_t) { return false; }
 
 void printPinPort(const pin_t) {}
-void printPinPWM(const pin_t) {}
-bool pwm_status(const pin_t) { return false; }
+
+static bool getValidPinMode(const pin_t pin) {
+  return isValidPin(pin) && !IS_INPUT(pin);
+}
+
+void printPinPWM(const int32_t pin) {
+  if (pwm_status(pin)) {
+    //uint32_t chan = g_APinDescription[pin].ulPWMChannel TODO when fast pwm is operative;
+    //SERIAL_ECHOPGM("PWM = ", duty);
+  }
+}

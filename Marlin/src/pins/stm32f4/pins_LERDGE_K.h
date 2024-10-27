@@ -120,39 +120,21 @@
   #ifndef X_SERIAL_TX_PIN
     #define X_SERIAL_TX_PIN                 PB2
   #endif
-  #ifndef X_SERIAL_RX_PIN
-    #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN
-  #endif
   #ifndef Y_SERIAL_TX_PIN
     #define Y_SERIAL_TX_PIN                 PE2
-  #endif
-  #ifndef Y_SERIAL_RX_PIN
-    #define Y_SERIAL_RX_PIN      Y_SERIAL_TX_PIN
   #endif
   #ifndef Z_SERIAL_TX_PIN
     #define Z_SERIAL_TX_PIN                 PE3
   #endif
-  #ifndef Z_SERIAL_RX_PIN
-    #define Z_SERIAL_RX_PIN      Z_SERIAL_TX_PIN
-  #endif
   #ifndef E0_SERIAL_TX_PIN
     #define E0_SERIAL_TX_PIN                PE4
-  #endif
-  #ifndef E0_SERIAL_RX_PIN
-    #define E0_SERIAL_RX_PIN    E0_SERIAL_TX_PIN
   #endif
   #ifndef E1_SERIAL_TX_PIN
     #define E1_SERIAL_TX_PIN                PE1
   #endif
-  #ifndef E1_SERIAL_RX_PIN
-    #define E1_SERIAL_RX_PIN    E1_SERIAL_TX_PIN
-  #endif
   // Ex-motor can be any... X2/Y2/Z2 or E2
   #ifndef EX_SERIAL_TX_PIN
     #define EX_SERIAL_TX_PIN                PE0
-  #endif
-  #ifndef EX_SERIAL_RX_PIN
-    #define EX_SERIAL_RX_PIN    EX_SERIAL_TX_PIN
   #endif
   //#define Z2_SERIAL_RX_PIN    EX_SERIAL_RX_PIN
   //#define Z2_SERIAL_TX_PIN    EX_SERIAL_TX_PIN
