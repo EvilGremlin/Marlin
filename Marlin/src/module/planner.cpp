@@ -2867,7 +2867,7 @@ bool Planner::buffer_segment(const abce_pos_t &abce
 
   #if HAS_EXTRUDERS
     // DRYRUN prevents E moves from taking place
-    if (DEBUGGING(DRYRUN) || TERN0(CANCEL_OBJECTS, cancelable.skipping)) {
+    if (DEBUGGING(DRYRUN) || TERN0(CANCEL_OBJECTS, cancelable.state.skipping)) {
       position.e = target.e;
       TERN_(HAS_POSITION_FLOAT, position_float.e = abce.e);
     }
