@@ -81,21 +81,18 @@
 // Steppers
 //
 #if HAS_TMC_UART
+
   // Reduce baud rate to improve software serial reliability
   #define TMC_BAUD_RATE 19200
 
   // Software serial
   #define X_SERIAL_TX_PIN                   PB12
-  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
   #define X_DIAG_PIN                        PB10
 
   #define Y_SERIAL_TX_PIN                   PB13
-  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
   #define Y_DIAG_PIN                        PB11
 
   #define Z_SERIAL_TX_PIN                   PB14
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
-
 #endif // HAS_TMC_UART
 
 //

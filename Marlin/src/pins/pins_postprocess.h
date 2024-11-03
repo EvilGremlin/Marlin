@@ -307,6 +307,7 @@
   #define E7_CS_PIN -1
 #endif
 
+// If only TX is defined, use the same pin for RX
 #if HAS_TMC_UART
   #if !defined(X_SERIAL_RX_PIN) && PIN_EXISTS(X_SERIAL_TX)
     #define X_SERIAL_RX_PIN      X_SERIAL_TX_PIN
