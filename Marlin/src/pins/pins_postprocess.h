@@ -333,6 +333,24 @@
   #if !defined(Z4_SERIAL_RX_PIN) && PIN_EXISTS(Z4_SERIAL_TX)
     #define Z4_SERIAL_RX_PIN    Z4_SERIAL_TX_PIN
   #endif
+  #if !defined(I_SERIAL_RX_PIN) && PIN_EXISTS(I_SERIAL_TX)
+    #define I_SERIAL_RX_PIN      I_SERIAL_TX_PIN
+  #endif
+  #if !defined(J_SERIAL_RX_PIN) && PIN_EXISTS(J_SERIAL_TX)
+    #define J_SERIAL_RX_PIN      J_SERIAL_TX_PIN
+  #endif
+  #if !defined(K_SERIAL_RX_PIN) && PIN_EXISTS(K_SERIAL_TX)
+    #define K_SERIAL_RX_PIN      K_SERIAL_TX_PIN
+  #endif
+  #if !defined(U_SERIAL_RX_PIN) && PIN_EXISTS(U_SERIAL_TX)
+    #define U_SERIAL_RX_PIN      U_SERIAL_TX_PIN
+  #endif
+  #if !defined(V_SERIAL_RX_PIN) && PIN_EXISTS(V_SERIAL_TX)
+    #define V_SERIAL_RX_PIN      V_SERIAL_TX_PIN
+  #endif
+  #if !defined(W_SERIAL_RX_PIN) && PIN_EXISTS(W_SERIAL_TX)
+    #define W_SERIAL_RX_PIN      W_SERIAL_TX_PIN
+  #endif
   #if !defined(EX_SERIAL_RX_PIN) && PIN_EXISTS(EX_SERIAL_TX)
     #define EX_SERIAL_RX_PIN    EX_SERIAL_TX_PIN
   #endif
