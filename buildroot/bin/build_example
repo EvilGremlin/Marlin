@@ -203,7 +203,7 @@ else
   #       Currently only BOARD_CREALITY_F401RE env:STM32F401RE_creality
   if ((ARCHIVE)); then
     annc "Archiving"
-    rm -f "$ARCSUB"/*.bin.tar.gz "$ARCSUB"/*.hex.tar.gz
+    rm -f "$ARCSUB"/*.tar.gz "$ARCSUB"/*.sha256.txt
     find "$BUILD" \( "${BNAME[@]}" \) -exec sh -c '
       ARCSUB="$1"
       CONFIG="$2"
