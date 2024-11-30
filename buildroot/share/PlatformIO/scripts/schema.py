@@ -343,14 +343,14 @@ def extract_files(filekey):
                         # Type is based on the value
                         value_type = \
                              'switch'  if val == '' \
-                        else 'bool'    if re.match(r'^(true|false)$', val) \
                         else 'int'     if re.match(r'^[-+]?\s*\d+$', val) \
                         else 'ints'    if re.match(r'^([-+]?\s*\d+)(\s*,\s*[-+]?\s*\d+)+$', val) \
                         else 'floats'  if re.match(rf'({flt}(\s*,\s*{flt})+)', val) \
                         else 'float'   if re.match(f'^({flt})$', val) \
                         else 'string'  if val[0] == '"' \
                         else 'char'    if val[0] == "'" \
-                        else 'state'   if re.match(r'^(LOW|HIGH)$', val) \
+                        else 'bool'    if val in ('true', 'false') \
+                        else 'state'   if val in ('HIGH', 'LOW') \
                         else 'enum'    if re.match(r'^[A-Za-z0-9_]{3,}$', val) \
                         else 'int[]'   if re.match(r'^{\s*[-+]?\s*\d+(\s*,\s*[-+]?\s*\d+)*\s*}$', val) \
                         else 'float[]' if re.match(r'^{{\s*{flt}(\s*,\s*{flt})*\s*}}$', val) \
@@ -385,7 +385,7 @@ def extract_files(filekey):
                             units = re.match(r'^\(([^)]+)\)', full_comment)
                             if units:
                                 units = units[1]
-                                if units == 's' or units == 'sec': units = 'seconds'
+                                if units in ('s', 'sec'): units = 'seconds'
                                 define_info['units'] = units
 
                         if 'comment' not in define_info or define_info['comment'] == '':
