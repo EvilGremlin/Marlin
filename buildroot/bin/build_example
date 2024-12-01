@@ -53,16 +53,17 @@ EXPNUM=
 NOFAIL=
 OUTBASE=
 BUILDINDEX=1
-while getopts 'ab:c:e:fhin:o:r-:' OFLAG; do
+
+while getopts 'ab:c:e:fhn:o:r-:' OFLAG; do
   case "${OFLAG}" in
     a) ARCHIVE=1 ;;
     b) BASE="${OPTARG%/}" ;;
     c) CONFIG="${OPTARG%/}" ;;
     e) EXPNUM="$OPTARG" ;;
+    f) NOFAIL=1 ;;
+    h) EXIT_USAGE=1 ; break ;;
     n) BUILDINDEX="$OPTARG" ;;
     o) OUTBASE="${OPTARG%/}" ;;
-    h) EXIT_USAGE=1 ; break ;;
-    f) NOFAIL=1 ;;
     r) REVEAL=1 ;;
     -) ONAM="${OPTARG%%=*}" ; OVAL="${OPTARG#*=}"
        case "$ONAM" in

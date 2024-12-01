@@ -126,7 +126,7 @@ def extract_files(filekey):
     sid = 0
     # Loop through files and parse them line by line
     for fn, fk in filekey.items():
-        with Path("Marlin", fn).open() as fileobj:
+        with Path("Marlin", fn).open(encoding='utf-8') as fileobj:
             section = 'none'        # Current Settings section
             line_number = 0         # Counter for the line number of the file
             conditions = []         # Create a condition stack for the current file
@@ -428,12 +428,12 @@ def extract():
     return extract_files({ 'Configuration.h':'basic', 'Configuration_adv.h':'advanced' })
 
 def dump_json(schema:dict, jpath:Path):
-    with jpath.open('w') as jfile:
+    with jpath.open('w', encoding='utf-8') as jfile:
         json.dump(schema, jfile, ensure_ascii=False, indent=2)
 
 def dump_yaml(schema:dict, ypath:Path):
     import yaml
-    with ypath.open('w') as yfile:
+    with ypath.open('w', encoding='utf-8') as yfile:
         yaml.dump(schema, yfile, default_flow_style=False, width=120, indent=2)
 
 def main():
