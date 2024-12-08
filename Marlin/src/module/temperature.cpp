@@ -703,6 +703,9 @@ volatile bool Temperature::raw_temps_ready = false;
       ui.update();
     #endif
 
+    // Update beeper queue
+    TERN_(HAS_BEEPER, buzzer.tick());
+
     return temp_ready;
   }
 
