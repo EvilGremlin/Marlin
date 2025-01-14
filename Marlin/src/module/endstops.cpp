@@ -27,7 +27,7 @@
 #include "endstops.h"
 #include "stepper.h"
 
-#if HAS_STATUS_MESSAGE
+#if ANY(HAS_STATUS_MESSAGE, VALIDATE_HOMING_ENDSTOPS)
   #include "../lcd/marlinui.h"
 #endif
 
