@@ -95,7 +95,7 @@
 #define TEMP_BOARD_PIN                  TEMP_MCU
 
 // SPI for MAX Thermocouple
-#if DISABLED(SDSUPPORT)
+#if !HAS_MEDIA
   #define TEMP_0_CS_PIN                       17  // Don't use 53 if using Display/SD card
 #else
   #define TEMP_0_CS_PIN                       17  // Don't use 49 (SD_DETECT_PIN)
