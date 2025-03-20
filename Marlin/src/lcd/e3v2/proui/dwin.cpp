@@ -2000,7 +2000,7 @@ void dwinRedrawScreen() {
 #endif // ADVANCED_PAUSE_FEATURE
 
 #if HAS_MESH
-  void dwinMeshViewer() {
+  void _dwinMeshViewer() {
     if (!leveling_is_valid())
       dwinPopupContinue(ICON_Leveling_1, GET_TEXT_F(MSG_MESH_VIEWER), GET_TEXT_F(MSG_NO_VALID_MESH));
     else {
@@ -2008,6 +2008,13 @@ void dwinRedrawScreen() {
       meshViewer.draw();
     }
   }
+  void dwinMeshViewer() {
+    TERN_(USE_GRID_MESHVIEWER, bedLevelTools.grid_meshview = false);
+    _dwinMeshViewer();
+  }
+  #if ENABLED(USE_GRID_MESHVIEWER)
+    void dwinMeshViewerGrid() { bedLevelTools.grid_meshview = true; _dwinMeshViewer(); }
+  #endif
 #endif
 
 #if HAS_LOCKSCREEN
@@ -3727,13 +3734,17 @@ void drawFilamentManMenu() {
 #if ENABLED(MESH_BED_LEVELING)
 
   void drawManualMeshMenu() {
+    constexpr uint8_t items = 6 + ENABLED(USE_GRID_MESHVIEWER);
     checkkey = ID_Menu;
-    if (SET_MENU(manualMeshMenu, MSG_UBL_MANUAL_MESH, 6)) {
+    if (SET_MENU(manualMeshMenu, MSG_UBL_MANUAL_MESH, items)) {
       BACK_ITEM(drawPrepareMenu);
       MENU_ITEM(ICON_ManualMesh, MSG_LEVEL_BED, onDrawMenuItem, manualMeshStart);
       mMeshMoveZItem = EDIT_ITEM(ICON_Zoffset, MSG_MOVE_Z, onDrawMMeshMoveZ, setMMeshMoveZ, &current_position.z);
       MENU_ITEM(ICON_Axis, MSG_UBL_CONTINUE_MESH, onDrawMenuItem, manualMeshContinue);
       MENU_ITEM(ICON_MeshViewer, MSG_MESH_VIEW, onDrawSubMenu, dwinMeshViewer);
+      #if USE_GRID_MESHVIEWER
+        MENU_ITEM(ICON_MeshViewer, MSG_MESH_VIEW_GRID, onDrawSubMenu, dwinMeshViewerGrid);
+      #endif
       MENU_ITEM(ICON_MeshSave, MSG_UBL_SAVE_MESH, onDrawMenuItem, manualMeshSave);
     }
     updateMenu(manualMeshMenu);
@@ -4333,6 +4344,7 @@ void drawMaxAccelMenu() {
       + TERN0(AUTO_BED_LEVELING_UBL, 6)
       + TERN0(PROUI_MESH_EDIT, 2)
       + 1
+      + ENABLED(USE_GRID_MESHVIEWER)
     );
     checkkey = ID_Menu;
     if (SET_MENU(meshMenu, MSG_MESH_LEVELING, items)) {
@@ -4358,6 +4370,9 @@ void drawMaxAccelMenu() {
         MENU_ITEM(ICON_MeshEdit, MSG_EDIT_MESH, onDrawSubMenu, drawEditMeshMenu);
       #endif
       MENU_ITEM(ICON_MeshViewer, MSG_MESH_VIEW, onDrawSubMenu, dwinMeshViewer);
+      #if USE_GRID_MESHVIEWER
+        MENU_ITEM(ICON_MeshViewer, MSG_MESH_VIEW_GRID, onDrawSubMenu, dwinMeshViewerGrid);
+      #endif
     }
     updateMenu(meshMenu);
   }
