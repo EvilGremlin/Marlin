@@ -736,7 +736,7 @@ inline void manage_inactivity(const bool no_stepper_sleep=false) {
       WRITE(FET_SAFETY_PIN, FET_SAFETY_INVERTED);
     }
   #endif
-}
+} // manage_inactivity()
 
 #if ALL(EP_BABYSTEPPING, EMERGENCY_PARSER)
   #include "feature/babystep.h"
@@ -890,7 +890,7 @@ void idle(const bool no_stepper_sleep/*=false*/) {
   TERN_(MARLIN_DEV_MODE, idle_depth--);
 
   return;
-}
+} // idle()
 
 /**
  * Kill all activity and lock the machine.
@@ -983,7 +983,7 @@ void stop() {
     safe_delay(350);       // allow enough time for messages to get out before stopping
     marlin_state = MarlinState::MF_STOPPED;
   }
-}
+} // stop()
 
 inline void tmc_standby_setup() {
   #if PIN_EXISTS(X_STDBY)
@@ -1052,7 +1052,7 @@ inline void tmc_standby_setup() {
   #if PIN_EXISTS(E7_STDBY)
     SET_INPUT_PULLDOWN(E7_STDBY_PIN);
   #endif
-}
+} // tmc_standby_setup()
 
 /**
  * Marlin Firmware entry-point. Abandon Hope All Ye Who Enter Here.
@@ -1702,7 +1702,7 @@ void setup() {
   SETUP_LOG("setup() completed.");
 
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
-}
+} // setup()
 
 /**
  * The main Marlin program loop
