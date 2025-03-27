@@ -139,6 +139,7 @@ int8_t GcodeSuite::get_target_extruder_from_command() {
  * Get the target E stepper from the 'T' parameter.
  * If there is no 'T' parameter then dval will be substituted.
  * Returns -1 if the resulting E stepper index is out of range.
+ * Use a default of -2 for silent failure.
  */
 int8_t GcodeSuite::get_target_e_stepper_from_command(const int8_t dval/*=-1*/) {
   const int8_t e = parser.intval('T', dval);
