@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2025 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,20 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#ifndef ENV_VALIDATE_H
-#define ENV_VALIDATE_H
+#pragma once
 
-#if NOT_TARGET(__STM32F1__, STM32F1)
-  #if NONE(ALLOW_STM32F4, ALLOW_GD32F3)
-    #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_STM32F4) && NOT_TARGET(STM32F4)
-    #error "Oops! Select an STM32F4 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_GD32F3) && NOT_TARGET(ARDUINO_ARCH_MFL)
-    #error "Oops! Make sure you have a GD32F3 MFL environment selected."
-  #endif
-#endif
-
-#undef ALLOW_STM32F4
-#undef ALLOW_GD32F3
-
+// If no real or emulated EEPROM selected, fall back to SD emulation
+#if USE_FALLBACK_EEPROM
+  #define SDCARD_EEPROM_EMULATION
+#elif ANY(I2C_EEPROM, SPI_EEPROM)
+  #define USE_SHARED_EEPROM 1
 #endif

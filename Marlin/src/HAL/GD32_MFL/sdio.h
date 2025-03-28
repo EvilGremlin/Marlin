@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2025 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,20 +19,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#ifndef ENV_VALIDATE_H
-#define ENV_VALIDATE_H
+#pragma once
 
-#if NOT_TARGET(__STM32F1__, STM32F1)
-  #if NONE(ALLOW_STM32F4, ALLOW_GD32F3)
-    #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_STM32F4) && NOT_TARGET(STM32F4)
-    #error "Oops! Select an STM32F4 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_GD32F3) && NOT_TARGET(ARDUINO_ARCH_MFL)
-    #error "Oops! Make sure you have a GD32F3 MFL environment selected."
-  #endif
-#endif
+#include <SDIO.hpp>
+#include <DMA.hpp>
 
-#undef ALLOW_STM32F4
-#undef ALLOW_GD32F3
+#define SDIO_D0_PIN   PC8
+#define SDIO_D1_PIN   PC9
+#define SDIO_D2_PIN   PC10
+#define SDIO_D3_PIN   PC11
+#define SDIO_CK_PIN   PC12
+#define SDIO_CMD_PIN  PD2
 
-#endif
+void sdio_mfl_init();
+bool SDIO_SetBusWidth(sdio::Bus_Width width);
+void DMA1_IRQHandler(dma::DMA_Channel channel);

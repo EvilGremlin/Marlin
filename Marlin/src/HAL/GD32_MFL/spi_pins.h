@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2025 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -17,22 +17,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
-#ifndef ENV_VALIDATE_H
-#define ENV_VALIDATE_H
+#pragma once
 
-#if NOT_TARGET(__STM32F1__, STM32F1)
-  #if NONE(ALLOW_STM32F4, ALLOW_GD32F3)
-    #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_STM32F4) && NOT_TARGET(STM32F4)
-    #error "Oops! Select an STM32F4 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_GD32F3) && NOT_TARGET(ARDUINO_ARCH_MFL)
-    #error "Oops! Make sure you have a GD32F3 MFL environment selected."
-  #endif
+// Define SPI Pins: SCK, MISO, MOSI
+#ifndef SD_SCK_PIN
+  #define SD_SCK_PIN  PIN_SPI_SCK
 #endif
-
-#undef ALLOW_STM32F4
-#undef ALLOW_GD32F3
-
+#ifndef SD_MISO_PIN
+  #define SD_MISO_PIN PIN_SPI_MISO
+#endif
+#ifndef SD_MOSI_PIN
+  #define SD_MOSI_PIN PIN_SPI_MOSI
 #endif

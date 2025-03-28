@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2023 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2025 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,57 +19,56 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#ifdef ARDUINO_ARCH_HC32
-
-#include "../../inc/MarlinConfig.h"
-
-#if USE_WIRED_EEPROM
-
-#warning "SPI / I2C EEPROM has not been tested on HC32F460."
 
 /**
  * PersistentStore for Arduino-style EEPROM interface
  * with simple implementations supplied by Marlin.
  */
 
+#include "../platforms.h"
+
+#ifdef ARDUINO_ARCH_MFL
+
+#include "../../inc/MarlinConfig.h"
+
+#if ENABLED(IIC_BL24CXX_EEPROM)
+
 #include "../shared/eeprom_if.h"
 #include "../shared/eeprom_api.h"
 
 #ifndef MARLIN_EEPROM_SIZE
-  #error "MARLIN_EEPROM_SIZE is required for I2C / SPI EEPROM."
+  #error "MARLIN_EEPROM_SIZE is required for IIC_BL24CXX_EEPROM."
 #endif
-size_t PersistentStore::capacity() { return MARLIN_EEPROM_SIZE - eeprom_exclude_size; }
 
-bool PersistentStore::access_finish() { return true; }
+size_t PersistentStore::capacity() {
+  return MARLIN_EEPROM_SIZE - eeprom_exclude_size;
+}
 
 bool PersistentStore::access_start() {
   eeprom_init();
-  #if ENABLED(SPI_EEPROM)
-    #if SPI_CHAN_EEPROM1 == 1
-      SET_OUTPUT(BOARD_SPI1_SCK_PIN);
-      SET_OUTPUT(BOARD_SPI1_MOSI_PIN);
-      SET_INPUT(BOARD_SPI1_MISO_PIN);
-      SET_OUTPUT(SPI_EEPROM1_CS);
-    #endif
+  return true;
+}
 
-    spiInit(0);
-  #endif
+bool PersistentStore::access_finish() {
   return true;
 }
 
 bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, uint16_t *crc) {
+  uint16_t written = 0;
   while (size--) {
-    uint8_t * const p = (uint8_t * const)REAL_EEPROM_ADDR(pos);
     uint8_t v = *value;
-    // EEPROM has only ~100,000 write cycles,
+    uint8_t * const p = (uint8_t * const)REAL_EEPROM_ADDR(pos);
+    // EPROM has only ~100,000 write cycles,
     // so only write bytes that have changed!
     if (v != eeprom_read_byte(p)) {
       eeprom_write_byte(p, v);
+      if (++written & 0x7F) delay(4); else safe_delay(4);
       if (eeprom_read_byte(p) != v) {
         SERIAL_ECHO_MSG(STR_ERR_EEPROM_WRITE);
         return true;
       }
     }
+
     crc16(crc, &v, 1);
     pos++;
     value++;
@@ -78,11 +77,10 @@ bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, ui
   return false;
 }
 
-bool PersistentStore::read_data(int &pos, uint8_t *value, size_t size, uint16_t *crc, const bool writing /*=true*/) {
+bool PersistentStore::read_data(int &pos, uint8_t *value, size_t size, uint16_t *crc, const bool writing/*=true*/) {
   do {
-    const uint8_t c = eeprom_read_byte((uint8_t *)REAL_EEPROM_ADDR(pos));
-    if (writing && value) *value = c;
-
+    const uint8_t c = eeprom_read_byte((uint8_t*)REAL_EEPROM_ADDR(pos));
+    if (writing) *value = c;
     crc16(crc, &c, 1);
     pos++;
     value++;
@@ -91,5 +89,5 @@ bool PersistentStore::read_data(int &pos, uint8_t *value, size_t size, uint16_t 
   return false;
 }
 
-#endif // USE_WIRED_EEPROM
-#endif // ARDUINO_ARCH_HC32
+#endif // IIC_BL24CXX_EEPROM
+#endif // ARDUINO_ARCH_MFL

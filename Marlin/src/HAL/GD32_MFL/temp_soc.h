@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2025 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -19,20 +19,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#ifndef ENV_VALIDATE_H
-#define ENV_VALIDATE_H
+#pragma once
 
-#if NOT_TARGET(__STM32F1__, STM32F1)
-  #if NONE(ALLOW_STM32F4, ALLOW_GD32F3)
-    #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_STM32F4) && NOT_TARGET(STM32F4)
-    #error "Oops! Select an STM32F4 board in 'Tools > Board.'"
-  #elif ENABLED(ALLOW_GD32F3) && NOT_TARGET(ARDUINO_ARCH_MFL)
-    #error "Oops! Make sure you have a GD32F3 MFL environment selected."
-  #endif
-#endif
+#define TS_TYPICAL_V      1.405
+#define TS_TYPICAL_TEMP   25
+#define TS_TYPICAL_SLOPE  4.5
 
-#undef ALLOW_STM32F4
-#undef ALLOW_GD32F3
-
-#endif
+// TODO: Implement voltage scaling (calibrated Vrefint) and ADC resolution scaling (when applicable)
+#define TEMP_SOC_SENSOR(RAW) ((TS_TYPICAL_V - (RAW) / float(OVERSAMPLENR) / float(HAL_ADC_RANGE) * (float(ADC_VREF_MV) / 1000)) / ((TS_TYPICAL_SLOPE) / 1000) + TS_TYPICAL_TEMP)
