@@ -899,6 +899,13 @@
 #endif
 
 /**
+ * MKS_TINYBEE Analog Reference
+ */
+#if ENABLED(EMIT_ADC_REFERENCE_VOLTAGE_WARNING)
+  #warning "Check your ADC_REFERENCE_VOLTAGE on MKS TinyBee! Measure the Analog Reference voltage on the board. See pins_MKS_TINYBEE.h for details."
+#endif
+
+/**
  * No PWM on the Piezo Beeper?
  */
 #if PIN_EXISTS(BEEPER) && ALL(SPEAKER, NO_SPEAKER)
