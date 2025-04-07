@@ -1525,7 +1525,7 @@ void DGUSScreenHandlerMKS::updateDisplayLanguage() {
     } break; // MKS_English
 
     case MKS_SimpleChinese: {
-      uint16_t home_buf_ch[] = { 0xF7D6, 0xB3D2 };
+      const uint16_t home_buf_ch[] = { 0xF7D6, 0xB3D2 };
       dgus.writeStringVar(VP_HOME_Dis, home_buf_ch, 4);
 
       const uint16_t Setting_Dis[] = { 0xE8C9, 0xC3D6, 0x2000, 0x2000, 0x2000 };
