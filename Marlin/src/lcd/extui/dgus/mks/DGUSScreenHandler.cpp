@@ -81,7 +81,7 @@ void DGUSScreenHandlerMKS::sendInfoScreen_P(PGM_P const line1, PGM_P const line2
 
 void DGUSScreenHandlerMKS::sendInfoScreenMKS(const void *line1, const void *line2, const void *line3, const void *line4, const MKS_Language language) {
   if (language == MKS_English)
-    DGUSScreenHandlerMKS::sendInfoScreen_P((char *)line1, (char *)line2, (char *)line3, (char *)line4);
+    DGUSScreenHandlerMKS::sendInfoScreen((char *)line1, (char *)line2, (char *)line3, (char *)line4);
   else if (language == MKS_SimpleChinese)
     DGUSScreenHandlerMKS::sendInfoScreen((uint16_t *)line1, (uint16_t *)line2, (uint16_t *)line3, (uint16_t *)line4);
 }
