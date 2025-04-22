@@ -62,11 +62,11 @@ void AboutScreen::onRedraw(draw_mode_t) {
   #ifdef LULZBOT_LCD_MACHINE_NAME
     cmd.tag(3);
     draw_text_box(cmd, BTN_POS(1,7), BTN_SIZE(4,3), F(
-          "Firmware:"
+      "Firmware:"
     ), OPT_CENTER, font_xlarge);
 
     draw_text_box(cmd, BTN_POS(1,10), BTN_SIZE(4,2), F(
-          "" LULZBOT_M115_EXTRUDER_TYPE ""
+      "" LULZBOT_M115_EXTRUDER_TYPE ""
     ), OPT_CENTER, font_xlarge);
   #endif
 
@@ -77,7 +77,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
   #endif
 
   draw_text_box(cmd, BTN_POS(1,19), BTN_SIZE(4,3), F(
-        "Version:"
+    "Version:"
   ), OPT_CENTER, font_xlarge);
 
   draw_text_box(cmd, BTN_POS(1,22), BTN_SIZE(4,2), F(

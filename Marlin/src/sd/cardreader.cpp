@@ -146,7 +146,7 @@ int16_t CardReader::nrItems = -1;
 
 DiskIODriver* CardReader::driver = nullptr;
 MarlinVolume CardReader::volume;
-MediaFile CardReader::file;
+MediaFile CardReader::myfile;
 
 #if HAS_MEDIA_SUBCALLS
   uint8_t CardReader::file_subcall_ctr;
@@ -463,9 +463,9 @@ void CardReader::ls(const uint8_t lsflags/*=0*/) {
 // Echo the DOS 8.3 filename (and long filename, if any)
 //
 void CardReader::printSelectedFilename() {
-  if (file.isOpen()) {
+  if (myfile.isOpen()) {
     char dosFilename[FILENAME_LENGTH];
-    file.getDosName(dosFilename);
+    myfile.getDosName(dosFilename);
     SERIAL_ECHO(dosFilename);
     #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
       selectFileByName(dosFilename);
@@ -517,7 +517,7 @@ void CardReader::mount() {
  */
 void CardReader::manage_media() {
   static uint8_t prev_stat = 2;     // At boot we don't know if media is present or not
-  uint8_t stat = uint8_t(IS_SD_INSERTED());
+  uint8_t stat = uint8_t(isInserted());
   if (stat == prev_stat) return;    // Already checked and still no change?
 
   DEBUG_SECTION(cmm, "CardReader::manage_media()", true);
@@ -626,7 +626,7 @@ void CardReader::endFilePrintNow(TERN_(SD_RESORT, const bool re_sort/*=false*/))
   TERN_(ADVANCED_PAUSE_FEATURE, did_pause_print = 0);
   TERN_(DWIN_CREALITY_LCD, hmiFlag.print_finish = flag.sdprinting);
   flag.abort_sd_printing = false;
-  if (isFileOpen()) file.close();
+  if (isFileOpen()) myfile.close();
   TERN_(SD_RESORT, if (re_sort) presort());
 }
 
@@ -661,7 +661,7 @@ void CardReader::getAbsFilenameInCWD(char *dst) {
     appendAtom(workDirParents[i]);
 
   if (cnt < MAXPATHNAMELENGTH - (FILENAME_LENGTH) - 1) {    // Leave room for filename and nul
-    appendAtom(file);
+    appendAtom(myfile);
     --dst;
   }
   *dst = '\0';
@@ -738,8 +738,8 @@ void CardReader::openFileRead(const char * const path, const uint8_t subcall_typ
   const char * const fname = diveToFile(true, diveDir, path);
   if (!fname) return openFailed(path);
 
-  if (file.open(diveDir, fname, O_READ)) {
-    filesize = file.fileSize();
+  if (myfile.open(diveDir, fname, O_READ)) {
+    filesize = myfile.fileSize();
     sdpos = 0;
 
     { // Don't remove this block, as the PORT_REDIRECT is a RAII
@@ -778,7 +778,7 @@ void CardReader::openFileWrite(const char * const path) {
   if (!fname) return openFailed(path);
 
   #if DISABLED(SDCARD_READONLY)
-    if (file.open(diveDir, fname, O_CREAT | O_APPEND | O_WRITE | O_TRUNC)) {
+    if (myfile.open(diveDir, fname, O_CREAT | O_APPEND | O_WRITE | O_TRUNC)) {
       flag.saving = true;
       selectFileByName(fname);
       TERN_(EMERGENCY_PARSER, emergency_parser.disable());
@@ -832,7 +832,7 @@ void CardReader::removeFile(const char * const name) {
   #if ENABLED(SDCARD_READONLY)
     SERIAL_ECHOLNPGM("Deletion failed (read-only), File: ", fname, ".");
   #else
-    if (file.remove(itsDirPtr, fname)) {
+    if (myfile.remove(itsDirPtr, fname)) {
       SERIAL_ECHOLNPGM("File deleted:", fname);
       sdpos = 0;
       TERN_(SDCARD_SORT_ALPHA, presort());
@@ -866,7 +866,7 @@ void CardReader::write_command(char * const buf) {
        *npos = nullptr,
        *end = buf + strlen(buf) - 1;
 
-  file.writeError = false;
+  myfile.writeError = false;
   if ((npos = strchr(buf, 'N'))) {
     begin = strchr(npos, ' ') + 1;
     end = strchr(npos, '*') - 1;
@@ -874,9 +874,9 @@ void CardReader::write_command(char * const buf) {
   end[1] = '\r';
   end[2] = '\n';
   end[3] = '\0';
-  file.write(begin);
+  myfile.write(begin);
 
-  if (file.writeError) SERIAL_ERROR_MSG(STR_SD_ERR_WRITE_TO_FILE);
+  if (myfile.writeError) SERIAL_ERROR_MSG(STR_SD_ERR_WRITE_TO_FILE);
 }
 
 #if DISABLED(NO_SD_AUTOSTART)
@@ -1001,8 +1001,8 @@ void CardReader::write_command(char * const buf) {
 // Close the working file.
 //
 void CardReader::closefile(const bool store_location/*=false*/) {
-  file.sync();
-  file.close();
+  myfile.sync();
+  myfile.close();
   flag.saving = flag.logging = false;
   sdpos = 0;
 
@@ -1441,7 +1441,7 @@ int16_t CardReader::get_num_items() {
 // Return from procedure or close out the Print Job.
 //
 void CardReader::fileHasFinished() {
-  file.close();
+  myfile.close();
 
   #if HAS_MEDIA_SUBCALLS
     if (file_subcall_ctr > 0) { // Resume calling file after closing procedure

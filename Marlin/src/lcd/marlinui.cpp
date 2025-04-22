@@ -1540,7 +1540,7 @@ uint8_t expand_u8str_P(char * const outstr, PGM_P const ptpl, const int8_t ind, 
     if (printingIsPaused())
       msg = GET_TEXT_F(MSG_PRINT_PAUSED);
     #if HAS_MEDIA
-      else if (IS_SD_PRINTING())
+      else if (card.isStillPrinting())
         return set_status_no_expire(card.longest_filename());
     #endif
     else if (print_job_timer.isRunning())
@@ -1743,7 +1743,7 @@ uint8_t expand_u8str_P(char * const outstr, PGM_P const ptpl, const int8_t ind, 
   void MarlinUI::abort_print() {
     #if HAS_MEDIA
       wait_for_heatup = wait_for_user = false;
-      if (IS_SD_PRINTING())
+      if (card.isStillPrinting())
         card.abortFilePrintSoon();
       else if (card.isMounted())
         card.closefile();
@@ -1810,7 +1810,7 @@ uint8_t expand_u8str_P(char * const outstr, PGM_P const ptpl, const int8_t ind, 
   void MarlinUI::resume_print() {
     reset_status();
     TERN_(PARK_HEAD_ON_PAUSE, wait_for_heatup = wait_for_user = false);
-    TERN_(HAS_MEDIA, if (IS_SD_PAUSED()) queue.inject_P(M24_STR));
+    TERN_(HAS_MEDIA, if (card.isPaused()) queue.inject_P(M24_STR));
     #ifdef ACTION_ON_RESUME
       hostui.resume();
     #endif

@@ -136,7 +136,7 @@ void tft_lvgl_init() {
 
   #if HAS_USB_FLASH_DRIVE
     #if HAS_MULTI_VOLUME && !HAS_SD_HOST_DRIVE
-      if (IS_SD_INSERTED())
+      if (card.isSDCardInserted())
         card.selectMediaSDCard();
       else
         card.selectMediaFlashDrive();

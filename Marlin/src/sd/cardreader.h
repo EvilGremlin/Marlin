@@ -230,6 +230,7 @@ public:
   static void pauseSDPrint()       { flag.sdprinting = false; }
   static bool isPrinting()         { return flag.sdprinting; }
   static bool isStillPrinting()    { return flag.sdprinting && !flag.abort_sd_printing; }
+  static bool isStillFetching()    { return isStillPrinting() && !flag.sdprintdone; }
   static bool isPaused()           { return isFileOpen() && !isPrinting(); }
   #if HAS_PRINT_PROGRESS_PERMYRIAD
     static uint16_t permyriadDone() {
@@ -289,14 +290,14 @@ public:
   // Print File stats
   static uint32_t getFileSize()  { return filesize; }
   static uint32_t getIndex()     { return sdpos; }
-  static bool isFileOpen()       { return isMounted() && file.isOpen(); }
+  static bool isFileOpen()       { return isMounted() && myfile.isOpen(); }
   static bool eof()              { return getIndex() >= getFileSize(); }
 
   // File data operations
-  static int16_t get()                            { int16_t out = (int16_t)file.read(); sdpos = file.curPosition(); return out; }
-  static int16_t read(void *buf, uint16_t nbyte)  { return file.isOpen() ? file.read(buf, nbyte) : -1; }
-  static int16_t write(void *buf, uint16_t nbyte) { return file.isOpen() ? file.write(buf, nbyte) : -1; }
-  static void setIndex(const uint32_t index)      { file.seekSet((sdpos = index)); }
+  static int16_t get()                            { int16_t out = (int16_t)myfile.read(); sdpos = myfile.curPosition(); return out; }
+  static int16_t read(void *buf, uint16_t nbyte)  { return myfile.isOpen() ? myfile.read(buf, nbyte) : -1; }
+  static int16_t write(void *buf, uint16_t nbyte) { return myfile.isOpen() ? myfile.write(buf, nbyte) : -1; }
+  static void setIndex(const uint32_t index)      { myfile.seekSet((sdpos = index)); }
 
   #if ENABLED(AUTO_REPORT_SD_STATUS)
     //
@@ -313,7 +314,7 @@ private:
   static DiskIODriver *driver;
   static MarlinVolume volume;
 
-  static MediaFile file;
+  static MediaFile myfile;
   static uint32_t filesize, // Total size of the current file, in bytes
                   sdpos;    // Index most recently read (one behind file.getPos)
 
@@ -405,31 +406,22 @@ private:
   #endif
 };
 
-#if HAS_USB_FLASH_DRIVE
-  #define IS_SD_INSERTED() DiskIODriver_USBFlash::isInserted()
-#elif HAS_SD_DETECT
-  #define IS_SD_INSERTED() (READ(SD_DETECT_PIN) == SD_DETECT_STATE)
-#else
-  // No card detect line? Assume the card is inserted.
-  #define IS_SD_INSERTED() true
-#endif
-
-#define IS_SD_MOUNTED()   card.isMounted()
-#define IS_SD_PRINTING()  card.isStillPrinting()
-#define IS_SD_FETCHING()  (!card.flag.sdprintdone && card.isStillPrinting())
-#define IS_SD_PAUSED()    card.isPaused()
-#define IS_SD_FILE_OPEN() card.isFileOpen()
-
-extern CardReader card;
-
 #else // !HAS_MEDIA
 
-#define IS_SD_MOUNTED()   false
-#define IS_SD_PRINTING()  false
-#define IS_SD_FETCHING()  false
-#define IS_SD_PAUSED()    false
-#define IS_SD_FILE_OPEN() false
+class CardReader {
+public:
+  static constexpr bool isFlashDriveInserted()  { return false; }
+  static constexpr bool isSDCardInserted()      { return false; }
+  static constexpr bool isInserted()            { return false; }
+  static constexpr bool isMounted()             { return false; }
+  static constexpr bool isStillPrinting()       { return false; }
+  static constexpr bool isStillFetching()       { return false; }
+  static constexpr bool isPaused()              { return false; }
+  static constexpr bool isFileOpen()            { return false; }
+};
 
 #define LONG_FILENAME_LENGTH 0
 
 #endif // !HAS_MEDIA
+
+extern CardReader card;
