@@ -437,7 +437,7 @@ namespace LanguageNarrow_ru {
   LSTR MSG_FILAMENTUNLOAD_ALL               = _UxGT("Выгрузить всё");
   #if HAS_MULTI_VOLUME
     LSTR MSG_ATTACH_SD_MEDIA                = _UxGT("Установить SD карту");
-    LSTR MSG_ATTACH_USB_MEDIA               = _UxGT("Установить флешка");
+    LSTR MSG_ATTACH_USB_MEDIA               = _UxGT("Монтировать USB"); // Установить флешка
   #else
     LSTR MSG_ATTACH_MEDIA                   = _UxGT("Установить SD карту");
   #endif
@@ -766,7 +766,6 @@ namespace LanguageNarrow_ru {
   LSTR MSG_SINGLENOZZLE_WIPE_RETRACT        = _UxGT("Вытирание при откате");
   LSTR MSG_PARK_FAILED                      = _UxGT("Не удалось запарковать");
   LSTR MSG_FILAMENTUNLOAD                   = _UxGT("Выгрузить филамент");
-  LSTR MSG_ATTACH_USB_MEDIA                 = _UxGT("Монтировать USB");
   LSTR MSG_BLTOUCH_SPEED_MODE               = _UxGT("Высокая скорость");
   LSTR MSG_MANUAL_PENUP                     = _UxGT("Поднять перо");
   LSTR MSG_MANUAL_PENDOWN                   = _UxGT("Опустить перо");
