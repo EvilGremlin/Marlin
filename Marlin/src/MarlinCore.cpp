@@ -820,9 +820,6 @@ void idle(const bool no_stepper_sleep/*=false*/) {
   // Handle SD Card insert / remove
   TERN_(HAS_MEDIA, card.manage_media());
 
-  // Handle USB Flash Drive insert / remove
-  TERN_(HAS_USB_FLASH_DRIVE, card.diskIODriver()->idle());
-
   // Announce Host Keepalive state (if any)
   TERN_(HOST_KEEPALIVE_FEATURE, gcode.host_keepalive());
 

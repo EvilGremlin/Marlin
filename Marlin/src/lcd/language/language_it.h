@@ -40,7 +40,7 @@
 
 #if HAS_SDCARD && !HAS_USB_FLASH_DRIVE
   #define MEDIA_TYPE_IT "SD"
-#elif HAS_USB_FLASH_DRIVE
+#elif HAS_USB_FLASH_DRIVE && !HAS_SDCARD
   #define MEDIA_TYPE_IT "USB"
 #else
   #define MEDIA_TYPE_IT "Media"

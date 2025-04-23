@@ -30,7 +30,7 @@
  *    3 - perform block range checking
  *    4 - print each block access
  */
-#define USB_DEBUG         1
+#define USB_DEBUG         TERN(MARLIN_DEV_MODE, 1, 0)
 #define USB_STARTUP_DELAY 0
 
 // uncomment to get 'printf' console debugging. NOT FOR UNO!

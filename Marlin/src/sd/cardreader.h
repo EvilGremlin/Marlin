@@ -143,10 +143,11 @@ public:
   }
 
   /**
-   * Media Detection - Inserted, Mounted, Job Running, Job Paused, etc.
+   * Media Detection - Inserted and Mounted Media
    *
-   * Marlin 2.1.x supports up to two drives, either an SD Card or USB-FD
-   * Onboard SD may have SPI or SDIO interface. USB FD may use MSC.
+   * Marlin 2.1.x supports up to two drives, either an SD Card or USB-FD.
+   * SD Card may have SPI or SDIO interface.
+   * SDIO / USB drives may be shared via MSC when not in use by Marlin.
    */
 
   // No card detect line? Assume the card is inserted.
@@ -169,7 +170,15 @@ public:
   // Mount and release physical media
   static void mount();
   static void release();
+
   static bool isMounted() { return flag.mounted; }
+
+  static bool isSDCardMounted() {
+    return isMounted() && isSDCardSelected();
+  }
+  static bool isFlashDriveMounted() {
+    return isMounted() && isFlashDriveSelected();
+  }
 
   // Handle media insert/remove (including mounting on boot-up)
   static void manage_media();
@@ -410,10 +419,17 @@ private:
 
 class CardReader {
 public:
-  static constexpr bool isFlashDriveInserted()  { return false; }
+  static constexpr bool isSDCardSelected()      { return false; }
+  static constexpr bool isFlashDriveSelected()  { return false; }
+
   static constexpr bool isSDCardInserted()      { return false; }
+  static constexpr bool isFlashDriveInserted()  { return false; }
   static constexpr bool isInserted()            { return false; }
+
+  static constexpr bool isSDCardMounted()       { return false; }
+  static constexpr bool isFlashDriveMounted()   { return false; }
   static constexpr bool isMounted()             { return false; }
+
   static constexpr bool isStillPrinting()       { return false; }
   static constexpr bool isStillFetching()       { return false; }
   static constexpr bool isPaused()              { return false; }

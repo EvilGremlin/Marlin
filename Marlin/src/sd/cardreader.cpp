@@ -501,7 +501,14 @@ void CardReader::mount() {
     cdroot();
   else {
     #if ANY(HAS_SD_DETECT, HAS_USB_FLASH_DRIVE)
-      if (marlin_state != MarlinState::MF_INITIALIZING) LCD_ALERTMESSAGE(MSG_MEDIA_INIT_FAIL);
+      if (marlin_state != MarlinState::MF_INITIALIZING) {
+        if (isSDCardSelected())
+          LCD_ALERTMESSAGE(MSG_MEDIA_INIT_FAIL_SD);
+        else if (isFlashDriveSelected())
+          LCD_ALERTMESSAGE(MSG_MEDIA_INIT_FAIL_USB);
+        else
+          LCD_ALERTMESSAGE(MSG_MEDIA_INIT_FAIL);
+      }
     #endif
   }
 
@@ -516,6 +523,10 @@ void CardReader::mount() {
  * Handle SD card events
  */
 void CardReader::manage_media() {
+  #if HAS_USB_FLASH_DRIVE           // Wrap for optimal non-virtual?
+    driver->idle();                 // Handle device tasks (e.g., USB Drive insert / remove)
+  #endif
+
   static uint8_t prev_stat = 2;     // At boot we don't know if media is present or not
   uint8_t stat = uint8_t(isInserted());
   if (stat == prev_stat) return;    // Already checked and still no change?

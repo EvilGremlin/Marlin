@@ -1079,7 +1079,9 @@ namespace ExtUI {
     return isPrintingFromMedia() || printJobOngoing();
   }
 
-  bool isMediaMounted() { return TERN0(HAS_MEDIA, card.isMounted()); }
+  bool isMediaMounted()    { return card.isMounted(); }
+  bool isMediaMountedSD()  { return card.isSDCardMounted(); }
+  bool isMediaMountedUSB() { return card.isFlashDriveMounted(); }
 
   // Pause/Resume/Stop are implemented in MarlinUI
   void pausePrint()  { ui.pause_print(); }
