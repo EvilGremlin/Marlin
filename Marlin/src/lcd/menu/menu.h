@@ -211,6 +211,7 @@ void menu_main();
 void menu_move();
 
 #if HAS_MEDIA
+  void menu_media_filelist();
   void menu_media();
 #endif
 
