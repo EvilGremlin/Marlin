@@ -28,6 +28,10 @@
 
 #if HAS_MEDIA
 
+#if HAS_MULTI_VOLUME && !SHARED_VOLUME_IS(SD_ONBOARD) && !SHARED_VOLUME_IS(USB_FLASH_DRIVE)
+  #error "DEFAULT_SHARED_VOLUME must be either SV_SD_ONBOARD or SV_USB_FLASH_DRIVE."
+#endif
+
 //#define DEBUG_CARDREADER
 
 #include "cardreader.h"
@@ -132,12 +136,12 @@ int16_t CardReader::nrItems = -1;
 
 #endif // SDCARD_SORT_ALPHA
 
-#if HAS_USB_FLASH_DRIVE
-  DiskIODriver_USBFlash CardReader::media_driver_usbFlash;
+#if HAS_SDCARD
+  CardReader::sdcard_driver_t CardReader::media_driver_sdcard;
 #endif
 
-#if NEED_SD2CARD_SDIO || NEED_SD2CARD_SPI
-  CardReader::sdcard_driver_t CardReader::media_driver_sdcard;
+#if HAS_USB_FLASH_DRIVE
+  DiskIODriver_USBFlash CardReader::media_driver_usbFlash;
 #endif
 
 DiskIODriver* CardReader::driver = nullptr;
@@ -153,13 +157,11 @@ MediaFile CardReader::file;
 uint32_t CardReader::filesize, CardReader::sdpos;
 
 CardReader::CardReader() {
-  changeMedia(&
-    #if HAS_USB_FLASH_DRIVE && !SHARED_VOLUME_IS(SD_ONBOARD)
-      media_driver_usbFlash
-    #else
-      media_driver_sdcard
-    #endif
-  );
+  #if HAS_USB_FLASH_DRIVE && !SHARED_VOLUME_IS(SD_ONBOARD)
+    selectMediaFlashDrive();
+  #else
+    selectMediaSDCard();
+  #endif
 
   #if ENABLED(SDCARD_SORT_ALPHA)
     sort_count = 0;

@@ -45,7 +45,7 @@ void lcd_sd_updir() {
 
   void MarlinUI::reselect_last_file() {
     if (sd_encoder_position == 0xFFFF) return;
-    goto_screen(menu_media_filelist, sd_encoder_position, sd_top_line, sd_items);
+    goto_screen(menu_file_selector, sd_encoder_position, sd_top_line, sd_items);
     sd_encoder_position = 0xFFFF;
     defer_status_screen();
   }
@@ -105,11 +105,11 @@ class MenuItem_sdfolder : public MenuItem_sdbase {
   void menu_media_select() {
     START_MENU();
     BACK_ITEM_F(TERN1(BROWSE_MEDIA_ON_INSERT, screen_history_depth) ? GET_TEXT_F(MSG_MAIN_MENU) : GET_TEXT_F(MSG_BACK));
-    #if ENABLED(VOLUME_SD_ONBOARD)
-      ACTION_ITEM(MSG_SD_CARD, []{ card.changeMedia(&card.media_driver_sdcard); card.mount(); ui.goto_screen(menu_media_filelist); });
+    #if HAS_SDCARD
+      ACTION_ITEM(MSG_SD_CARD,  []{ card.selectMediaSDCard();     card.mount(); ui.goto_screen(menu_file_selector); });
     #endif
-    #if ENABLED(VOLUME_USB_FLASH_DRIVE)
-      ACTION_ITEM(MSG_USB_DISK, []{ card.changeMedia(&card.media_driver_usbFlash); card.mount(); ui.goto_screen(menu_media_filelist); });
+    #if HAS_USB_FLASH_DRIVE
+      ACTION_ITEM(MSG_USB_DISK, []{ card.selectMediaFlashDrive(); card.mount(); ui.goto_screen(menu_file_selector); });
     #endif
     END_MENU();
   }
@@ -117,14 +117,14 @@ class MenuItem_sdfolder : public MenuItem_sdbase {
 
 /**
  * "Select From Media" menu item. Depending on single or multiple drives:
- *   - menu_media_filelist - List files on the current media
- *   - menu_media_select   - Select one of the attached drives, then go to the file list
+ *   - menu_file_selector - List files on the current media
+ *   - menu_media_select  - Select one of the attached drives, then go to the file list
  */
 void menu_media() {
-  ui.goto_screen(TERN(HAS_MULTI_VOLUME, menu_media_select, menu_media_filelist));
+  ui.goto_screen(TERN(HAS_MULTI_VOLUME, menu_media_select, menu_file_selector));
 }
 
-void menu_media_filelist() {
+void menu_file_selector() {
   ui.encoder_direction_menus();
 
   #if HAS_MARLINUI_U8GLIB
