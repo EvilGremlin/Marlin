@@ -52,7 +52,6 @@ bool eeprom_file_open = false;
 size_t PersistentStore::capacity() { return MARLIN_EEPROM_SIZE - eeprom_exclude_size; }
 
 bool PersistentStore::access_start() {
-  const char eeprom_erase_value = 0xFF;
   MSC_Aquire_Lock();
   if (f_mount(&fat_fs, "", 1)) {
     MSC_Release_Lock();
@@ -65,6 +64,7 @@ bool PersistentStore::access_start() {
     UINT bytes_written;
     FSIZE_t file_size = f_size(&eeprom_file);
     f_lseek(&eeprom_file, file_size);
+    const char eeprom_erase_value = 0xFF;
     while (file_size < capacity() && res == FR_OK) {
       res = f_write(&eeprom_file, &eeprom_erase_value, 1, &bytes_written);
       file_size++;
