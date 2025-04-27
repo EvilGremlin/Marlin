@@ -139,7 +139,7 @@ public:
   static void isr_on()  { __enable_irq(); }
   static void isr_off() { __disable_irq(); }
 
-  static void delay_ms(const int ms) { ::delay(ms); }
+  static void delay_ms(const int ms) { delay(ms); }
 
   // Tasks, called from idle()
   static void idletask() {}

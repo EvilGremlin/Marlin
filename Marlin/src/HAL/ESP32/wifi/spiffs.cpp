@@ -1,7 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
- * Copyright (c) 2019 BigTreeTech [https://github.com/bigtreetech]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -20,14 +19,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#pragma once
+#ifdef ARDUINO_ARCH_ESP32
 
-#include <USBComposite.h>
+#include "../../../inc/MarlinConfigPre.h"
 
-#include "../../inc/MarlinConfigPre.h"
-#include "../../core/serial_hook.h"
+#if ALL(WIFISUPPORT, WEBSUPPORT)
 
-extern USBMassStorage MarlinMSC;
-extern Serial1Class<USBCompositeSerial> MarlinCompositeSerial;
+#include "../../../core/serial.h"
 
-void MSC_SD_init();
+#include <FS.h>
+#include <SPIFFS.h>
+
+bool spiffs_initialized;
+
+void spiffs_init() {
+  if (SPIFFS.begin(true))  // formatOnFail = true
+    spiffs_initialized = true;
+  else
+    SERIAL_ERROR_MSG("SPIFFS mount failed");
+}
+
+#endif // WIFISUPPORT && WEBSUPPORT
+#endif // ARDUINO_ARCH_ESP32

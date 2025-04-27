@@ -20,20 +20,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-#include "../platforms.h"
+#include "../../platforms.h"
 
 #ifdef HAL_STM32
 
-#include "../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 #if HAS_SD_HOST_DRIVE
 
-#include "../shared/Marduino.h"
+#include "../../../sd/cardreader.h"
+
 #include "msc_sd.h"
-#include "usbd_core.h"
 
-#include "../../sd/cardreader.h"
-
+#include <usbd_core.h>
 #include <USB.h>
 #include <USBMscHandler.h>
 

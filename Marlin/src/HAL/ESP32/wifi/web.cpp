@@ -21,11 +21,11 @@
  */
 #ifdef ARDUINO_ARCH_ESP32
 
-#include "../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 #if ALL(WIFISUPPORT, WEBSUPPORT)
 
-#include "../../inc/MarlinConfig.h"
+#include "../../../inc/MarlinConfig.h"
 
 #undef DISABLED  // esp32-hal-gpio.h
 #include <SPIFFS.h>
