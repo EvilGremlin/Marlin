@@ -1957,7 +1957,10 @@ void MarlinUI::update() {
 }
 
 #if HAS_LCD_BRIGHTNESS
-  void MarlinUI::_set_brightness() { dwinLCDBrightness(backlight ? brightness : 0); }
+  void MarlinUI::_set_brightness() {
+    if (!backlight) wait_for_user = true;
+    dwinLCDBrightness(backlight ? brightness : 0);
+  }
 #endif
 
 void MarlinUI::kill_screen(FSTR_P const lcd_error, FSTR_P const) {
@@ -2273,7 +2276,7 @@ void setMoveZ() { hmiValue.axis = Z_AXIS; setPFloatOnClick(Z_MIN_POS, Z_MAX_POS,
   void applyBrightness() { ui.set_brightness(menuData.value); }
   void liveBrightness() { dwinLCDBrightness(menuData.value); }
   void setBrightness() { setIntOnClick(LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX, ui.brightness, applyBrightness, liveBrightness); }
-  void turnOffBacklight() { hmiSaveProcessID(ID_WaitResponse); ui.set_brightness(0); dwinRedrawScreen(); }
+  void turnOffBacklight() { ui.set_brightness(0); dwinRedrawScreen(); }
 #endif
 
 #if ENABLED(CASE_LIGHT_MENU)
